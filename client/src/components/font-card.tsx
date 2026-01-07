@@ -297,7 +297,7 @@ export function FontCard({ font, previewText, fontSize, index = 0, color, onColo
           style={{
             fontFamily: font.family,
             fontSize: `${fontSize}px`,
-            color: Object.keys(aiStyles).length > 0 ? undefined : color,
+            color: aiStyles.color || aiStyles.background ? undefined : color,
             fontWeight: isBold ? "bold" : "normal",
             fontStyle: isItalic ? "italic" : "normal",
             textDecoration: isUnderline ? "underline" : "none",

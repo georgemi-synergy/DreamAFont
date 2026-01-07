@@ -9,6 +9,58 @@ const openai = new OpenAI({
   baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
 });
 
+// Whitelist of safe CSS properties for AI-generated styles
+const ALLOWED_CSS_PROPERTIES = new Set([
+  'textShadow',
+  'color',
+  'background',
+  'backgroundClip',
+  'WebkitBackgroundClip',
+  'WebkitTextFillColor',
+  'filter',
+  'transform',
+  'letterSpacing',
+  'fontWeight',
+  'opacity',
+  'textStroke',
+  'WebkitTextStroke',
+]);
+
+// Sanitize AI-generated styles to prevent CSS injection
+function sanitizeStyles(styles: Record<string, unknown>): Record<string, string> {
+  const sanitized: Record<string, string> = {};
+  
+  for (const [key, value] of Object.entries(styles)) {
+    // Only allow whitelisted properties
+    if (!ALLOWED_CSS_PROPERTIES.has(key)) {
+      continue;
+    }
+    
+    // Value must be a string
+    if (typeof value !== 'string') {
+      continue;
+    }
+    
+    // Block dangerous patterns
+    const dangerousPatterns = [
+      /url\s*\(/i,           // url() can load external resources
+      /expression\s*\(/i,    // IE expression()
+      /javascript:/i,        // javascript: URIs
+      /behavior:/i,          // IE behavior
+      /@import/i,            // @import rules
+      /binding:/i,           // Mozilla binding
+    ];
+    
+    if (dangerousPatterns.some(pattern => pattern.test(value))) {
+      continue;
+    }
+    
+    sanitized[key] = value;
+  }
+  
+  return sanitized;
+}
+
 export async function registerRoutes(
   httpServer: Server,
   app: Express
@@ -69,16 +121,19 @@ Return ONLY the JSON object, no markdown, no explanation.`
       const content = response.choices[0]?.message?.content || "{}";
       
       // Try to parse the JSON response
-      let styles = {};
+      let rawStyles: Record<string, unknown> = {};
       try {
-        styles = JSON.parse(content.trim());
+        rawStyles = JSON.parse(content.trim());
       } catch (e) {
         // If parsing fails, try to extract JSON from the response
         const jsonMatch = content.match(/\{[\s\S]*\}/);
         if (jsonMatch) {
-          styles = JSON.parse(jsonMatch[0]);
+          rawStyles = JSON.parse(jsonMatch[0]);
         }
       }
+
+      // Sanitize the styles to prevent CSS injection
+      const styles = sanitizeStyles(rawStyles);
 
       res.json({ styles, prompt });
     } catch (error) {
