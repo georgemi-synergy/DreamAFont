@@ -71,10 +71,12 @@ export function Toolbar({
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Categories</SelectItem>
-              <SelectItem value="serif">Serif</SelectItem>
-              <SelectItem value="sans-serif">Sans Serif</SelectItem>
-              <SelectItem value="display">Display</SelectItem>
-              <SelectItem value="mono">Monospace</SelectItem>
+              <SelectItem value="Sans-serif">Sans Serif</SelectItem>
+              <SelectItem value="Serif">Serif</SelectItem>
+              <SelectItem value="Monospace">Monospace</SelectItem>
+              <SelectItem value="Display">Display</SelectItem>
+              <SelectItem value="Cursive">Cursive</SelectItem>
+              <SelectItem value="Spooky">Spooky</SelectItem>
             </SelectContent>
           </Select>
           

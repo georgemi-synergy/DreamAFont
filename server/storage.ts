@@ -53,6 +53,30 @@ export class MemStorage implements IStorage {
       { name: "Architects Daughter", family: "Architects Daughter", category: "Display" },
       { name: "Oxanium", family: "Oxanium", category: "Display" },
       { name: "Space Grotesk", family: "Space Grotesk", category: "Display" },
+      { name: "Permanent Marker", family: "Permanent Marker", category: "Display" },
+      { name: "Rock Salt", family: "Rock Salt", category: "Display" },
+      { name: "Bangers", family: "Bangers", category: "Display" },
+      { name: "Fredoka", family: "Fredoka", category: "Display" },
+      { name: "Righteous", family: "Righteous", category: "Display" },
+      { name: "Monoton", family: "Monoton", category: "Display" },
+      { name: "Bungee Shade", family: "Bungee Shade", category: "Display" },
+      
+      // Cursive / Handwriting
+      { name: "Dancing Script", family: "Dancing Script", category: "Cursive" },
+      { name: "Pacifico", family: "Pacifico", category: "Cursive" },
+      { name: "Great Vibes", family: "Great Vibes", category: "Cursive" },
+      { name: "Satisfy", family: "Satisfy", category: "Cursive" },
+      { name: "Sacramento", family: "Sacramento", category: "Cursive" },
+      { name: "Lobster", family: "Lobster", category: "Cursive" },
+      { name: "Caveat", family: "Caveat", category: "Cursive" },
+      { name: "Kaushan Script", family: "Kaushan Script", category: "Cursive" },
+      { name: "Cookie", family: "Cookie", category: "Cursive" },
+      { name: "Allura", family: "Allura", category: "Cursive" },
+      
+      // Spooky / Monster
+      { name: "Creepster", family: "Creepster", category: "Spooky" },
+      { name: "Nosifer", family: "Nosifer", category: "Spooky" },
+      { name: "Rubik Glitch", family: "Rubik Glitch", category: "Spooky" },
     ];
 
     seedData.forEach(font => {

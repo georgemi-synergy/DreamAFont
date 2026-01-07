@@ -103,6 +103,10 @@ export function FontCard({ font, previewText, fontSize, index = 0, color, onColo
         return "bg-slate-100 text-slate-800 dark:bg-slate-800/50 dark:text-slate-300";
       case "display":
         return "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300";
+      case "cursive":
+        return "bg-pink-100 text-pink-800 dark:bg-pink-900/30 dark:text-pink-300";
+      case "spooky":
+        return "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300";
       default:
         return "bg-gray-100 text-gray-800 dark:bg-gray-800/50 dark:text-gray-300";
     }
