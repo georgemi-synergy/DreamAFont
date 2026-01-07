@@ -3,7 +3,7 @@ import type { Font } from "@shared/schema";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence, useAnimation } from "framer-motion";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Palette, Play } from "lucide-react";
+import { Palette, Play, Bold, Italic, Underline } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface FontCardProps {
@@ -87,6 +87,9 @@ const textAnimations = {
 export function FontCard({ font, previewText, fontSize, index = 0, color, onColorChange }: FontCardProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [currentAnim, setCurrentAnim] = useState<keyof typeof textAnimations>("bounce");
+  const [isBold, setIsBold] = useState(false);
+  const [isItalic, setIsItalic] = useState(false);
+  const [isUnderline, setIsUnderline] = useState(false);
   const textControls = useAnimation();
 
   const playAnimation = async () => {
@@ -177,6 +180,9 @@ export function FontCard({ font, previewText, fontSize, index = 0, color, onColo
             fontFamily: font.family,
             fontSize: `${fontSize}px`,
             color: color,
+            fontWeight: isBold ? "bold" : "normal",
+            fontStyle: isItalic ? "italic" : "normal",
+            textDecoration: isUnderline ? "underline" : "none",
           }}
         >
           {previewText || "The quick brown fox jumps over the lazy dog."}
@@ -191,6 +197,37 @@ export function FontCard({ font, previewText, fontSize, index = 0, color, onColo
         transition={{ delay: index * 0.04 + 0.15, duration: 0.3 }}
       >
         <div className="flex items-center gap-2 flex-wrap">
+          {/* Text Effect Toggles */}
+          <div className="flex items-center gap-1">
+            <Button
+              variant={isBold ? "secondary" : "ghost"}
+              size="icon"
+              onClick={() => setIsBold(!isBold)}
+              className="h-8 w-8"
+              data-testid={`button-bold-${font.id}`}
+            >
+              <Bold className="w-3.5 h-3.5" />
+            </Button>
+            <Button
+              variant={isItalic ? "secondary" : "ghost"}
+              size="icon"
+              onClick={() => setIsItalic(!isItalic)}
+              className="h-8 w-8"
+              data-testid={`button-italic-${font.id}`}
+            >
+              <Italic className="w-3.5 h-3.5" />
+            </Button>
+            <Button
+              variant={isUnderline ? "secondary" : "ghost"}
+              size="icon"
+              onClick={() => setIsUnderline(!isUnderline)}
+              className="h-8 w-8"
+              data-testid={`button-underline-${font.id}`}
+            >
+              <Underline className="w-3.5 h-3.5" />
+            </Button>
+          </div>
+
           {/* Animation Button */}
           <Popover>
             <PopoverTrigger asChild>
