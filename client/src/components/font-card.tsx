@@ -36,6 +36,62 @@ function FloralCorner({ className }: { className?: string }) {
   );
 }
 
+function VineEdge({ position }: { position: "top" | "bottom" | "left" | "right" }) {
+  const isHorizontal = position === "top" || position === "bottom";
+  
+  return (
+    <svg 
+      viewBox={isHorizontal ? "0 0 200 20" : "0 0 20 200"}
+      className={cn(
+        "absolute pointer-events-none",
+        isHorizontal ? "h-5 left-16 right-16" : "w-5 top-16 bottom-16",
+        position === "top" && "top-0",
+        position === "bottom" && "bottom-0 rotate-180",
+        position === "left" && "left-0",
+        position === "right" && "right-0 rotate-180"
+      )}
+      fill="currentColor"
+      preserveAspectRatio="none"
+    >
+      {isHorizontal ? (
+        <g>
+          <path d="M 0 10 Q 10 5 20 10 T 40 10 T 60 10 T 80 10 T 100 10 T 120 10 T 140 10 T 160 10 T 180 10 T 200 10" 
+                stroke="currentColor" strokeWidth="1" fill="none" opacity="0.5" />
+          <path d="M 15 8 Q 18 5 15 2 Q 12 5 15 8" opacity="0.6" />
+          <path d="M 45 12 Q 48 9 45 6 Q 42 9 45 12" opacity="0.6" />
+          <path d="M 75 8 Q 78 5 75 2 Q 72 5 75 8" opacity="0.6" />
+          <path d="M 105 12 Q 108 9 105 6 Q 102 9 105 12" opacity="0.6" />
+          <path d="M 135 8 Q 138 5 135 2 Q 132 5 135 8" opacity="0.6" />
+          <path d="M 165 12 Q 168 9 165 6 Q 162 9 165 12" opacity="0.6" />
+          <circle cx="30" cy="10" r="1.5" opacity="0.4" />
+          <circle cx="60" cy="10" r="1.5" opacity="0.4" />
+          <circle cx="90" cy="10" r="1.5" opacity="0.4" />
+          <circle cx="120" cy="10" r="1.5" opacity="0.4" />
+          <circle cx="150" cy="10" r="1.5" opacity="0.4" />
+          <circle cx="180" cy="10" r="1.5" opacity="0.4" />
+        </g>
+      ) : (
+        <g>
+          <path d="M 10 0 Q 5 10 10 20 T 10 40 T 10 60 T 10 80 T 10 100 T 10 120 T 10 140 T 10 160 T 10 180 T 10 200" 
+                stroke="currentColor" strokeWidth="1" fill="none" opacity="0.5" />
+          <path d="M 8 15 Q 5 18 2 15 Q 5 12 8 15" opacity="0.6" />
+          <path d="M 12 45 Q 9 48 6 45 Q 9 42 12 45" opacity="0.6" />
+          <path d="M 8 75 Q 5 78 2 75 Q 5 72 8 75" opacity="0.6" />
+          <path d="M 12 105 Q 9 108 6 105 Q 9 102 12 105" opacity="0.6" />
+          <path d="M 8 135 Q 5 138 2 135 Q 5 132 8 135" opacity="0.6" />
+          <path d="M 12 165 Q 9 168 6 165 Q 9 162 12 165" opacity="0.6" />
+          <circle cx="10" cy="30" r="1.5" opacity="0.4" />
+          <circle cx="10" cy="60" r="1.5" opacity="0.4" />
+          <circle cx="10" cy="90" r="1.5" opacity="0.4" />
+          <circle cx="10" cy="120" r="1.5" opacity="0.4" />
+          <circle cx="10" cy="150" r="1.5" opacity="0.4" />
+          <circle cx="10" cy="180" r="1.5" opacity="0.4" />
+        </g>
+      )}
+    </svg>
+  );
+}
+
 interface FontCardProps {
   font: Font;
   previewText: string;
@@ -169,6 +225,14 @@ export function FontCard({ font, previewText, fontSize, index = 0, color, onColo
       <FloralCorner className="top-0 right-0 text-foreground/80 -scale-x-100" />
       <FloralCorner className="bottom-0 left-0 text-foreground/80 -scale-y-100" />
       <FloralCorner className="bottom-0 right-0 text-foreground/80 -scale-x-100 -scale-y-100" />
+      
+      {/* Vine edges connecting the corners */}
+      <div className="text-foreground/80">
+        <VineEdge position="top" />
+        <VineEdge position="bottom" />
+        <VineEdge position="left" />
+        <VineEdge position="right" />
+      </div>
 
       {/* Animated glow effect on hover */}
       <motion.div
