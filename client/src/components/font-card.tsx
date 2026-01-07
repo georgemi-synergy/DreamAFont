@@ -3,8 +3,9 @@ import type { Font } from "@shared/schema";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence, useAnimation } from "framer-motion";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Palette, Play, Bold, Italic, Underline } from "lucide-react";
+import { Palette, Play, Bold, Italic, Underline, Copy, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
 
 function FloralCorner({ className }: { className?: string }) {
   return (
@@ -196,7 +197,27 @@ export function FontCard({ font, previewText, fontSize, index = 0, color, onColo
   const [isBold, setIsBold] = useState(false);
   const [isItalic, setIsItalic] = useState(false);
   const [isUnderline, setIsUnderline] = useState(false);
+  const [copied, setCopied] = useState(false);
   const textControls = useAnimation();
+  const { toast } = useToast();
+
+  const copyFontName = async () => {
+    try {
+      await navigator.clipboard.writeText(font.family);
+      setCopied(true);
+      toast({
+        title: "Copied!",
+        description: `"${font.family}" copied to clipboard`,
+      });
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      toast({
+        title: "Failed to copy",
+        description: "Please try again",
+        variant: "destructive",
+      });
+    }
+  };
 
   const playAnimation = async () => {
     await textControls.start(textAnimations[currentAnim]);
@@ -267,9 +288,24 @@ export function FontCard({ font, previewText, fontSize, index = 0, color, onColo
         animate={{ opacity: 1, x: 0 }}
         transition={{ delay: index * 0.08 + 0.2, duration: 0.4 }}
       >
-        <h3 className="font-semibold text-lg text-foreground tracking-tight truncate">
-          {font.name}
-        </h3>
+        <div className="flex items-center gap-2 min-w-0">
+          <h3 className="font-semibold text-lg text-foreground tracking-tight truncate">
+            {font.name}
+          </h3>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={copyFontName}
+            className="h-7 w-7 shrink-0"
+            data-testid={`button-copy-${font.id}`}
+          >
+            {copied ? (
+              <Check className="w-3.5 h-3.5 text-green-500" />
+            ) : (
+              <Copy className="w-3.5 h-3.5" />
+            )}
+          </Button>
+        </div>
         <motion.span
           initial={{ opacity: 0, scale: 0 }}
           animate={{ opacity: 1, scale: 1 }}
