@@ -47,7 +47,7 @@ export default function Home() {
               Dream a Font
             </h1>
             <p className="text-muted-foreground mt-2 text-lg">
-              Explore and preview Google Fonts in real-time.
+              Do you want a fancy font or animation for work or school? Well you've come to the right place.
             </p>
           </div>
           <div className="text-sm font-medium text-muted-foreground bg-muted/30 px-4 py-2 rounded-full border border-border/40">
