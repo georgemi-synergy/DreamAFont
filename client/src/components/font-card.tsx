@@ -36,58 +36,77 @@ function FloralCorner({ className }: { className?: string }) {
   );
 }
 
-function VineEdge({ position }: { position: "top" | "bottom" | "left" | "right" }) {
-  const isHorizontal = position === "top" || position === "bottom";
-  
+function VineBorder() {
   return (
     <svg 
-      viewBox={isHorizontal ? "0 0 200 20" : "0 0 20 200"}
-      className={cn(
-        "absolute pointer-events-none",
-        isHorizontal ? "h-5 left-0 right-0" : "w-5 top-0 bottom-0",
-        position === "top" && "top-0",
-        position === "bottom" && "bottom-0 rotate-180",
-        position === "left" && "left-0",
-        position === "right" && "right-0 rotate-180"
-      )}
-      fill="currentColor"
+      className="absolute inset-0 w-full h-full pointer-events-none"
+      viewBox="0 0 300 400"
+      fill="none"
       preserveAspectRatio="none"
     >
-      {isHorizontal ? (
-        <g>
-          <path d="M 0 10 Q 10 5 20 10 T 40 10 T 60 10 T 80 10 T 100 10 T 120 10 T 140 10 T 160 10 T 180 10 T 200 10" 
-                stroke="currentColor" strokeWidth="1" fill="none" opacity="0.5" />
-          <path d="M 15 8 Q 18 5 15 2 Q 12 5 15 8" opacity="0.6" />
-          <path d="M 45 12 Q 48 9 45 6 Q 42 9 45 12" opacity="0.6" />
-          <path d="M 75 8 Q 78 5 75 2 Q 72 5 75 8" opacity="0.6" />
-          <path d="M 105 12 Q 108 9 105 6 Q 102 9 105 12" opacity="0.6" />
-          <path d="M 135 8 Q 138 5 135 2 Q 132 5 135 8" opacity="0.6" />
-          <path d="M 165 12 Q 168 9 165 6 Q 162 9 165 12" opacity="0.6" />
-          <circle cx="30" cy="10" r="1.5" opacity="0.4" />
-          <circle cx="60" cy="10" r="1.5" opacity="0.4" />
-          <circle cx="90" cy="10" r="1.5" opacity="0.4" />
-          <circle cx="120" cy="10" r="1.5" opacity="0.4" />
-          <circle cx="150" cy="10" r="1.5" opacity="0.4" />
-          <circle cx="180" cy="10" r="1.5" opacity="0.4" />
-        </g>
-      ) : (
-        <g>
-          <path d="M 10 0 Q 5 10 10 20 T 10 40 T 10 60 T 10 80 T 10 100 T 10 120 T 10 140 T 10 160 T 10 180 T 10 200" 
-                stroke="currentColor" strokeWidth="1" fill="none" opacity="0.5" />
-          <path d="M 8 15 Q 5 18 2 15 Q 5 12 8 15" opacity="0.6" />
-          <path d="M 12 45 Q 9 48 6 45 Q 9 42 12 45" opacity="0.6" />
-          <path d="M 8 75 Q 5 78 2 75 Q 5 72 8 75" opacity="0.6" />
-          <path d="M 12 105 Q 9 108 6 105 Q 9 102 12 105" opacity="0.6" />
-          <path d="M 8 135 Q 5 138 2 135 Q 5 132 8 135" opacity="0.6" />
-          <path d="M 12 165 Q 9 168 6 165 Q 9 162 12 165" opacity="0.6" />
-          <circle cx="10" cy="30" r="1.5" opacity="0.4" />
-          <circle cx="10" cy="60" r="1.5" opacity="0.4" />
-          <circle cx="10" cy="90" r="1.5" opacity="0.4" />
-          <circle cx="10" cy="120" r="1.5" opacity="0.4" />
-          <circle cx="10" cy="150" r="1.5" opacity="0.4" />
-          <circle cx="10" cy="180" r="1.5" opacity="0.4" />
-        </g>
-      )}
+      <g stroke="currentColor" strokeWidth="1.5" opacity="0.7">
+        <path d="M 10 5 Q 30 12 50 5 T 90 5 T 130 5 T 170 5 T 210 5 T 250 5 T 290 5
+                 Q 295 5 295 10 
+                 Q 288 30 295 50 T 295 90 T 295 130 T 295 170 T 295 210 T 295 250 T 295 290 T 295 330 T 295 370 T 295 390
+                 Q 295 395 290 395
+                 Q 270 388 250 395 T 210 395 T 170 395 T 130 395 T 90 395 T 50 395 T 10 395
+                 Q 5 395 5 390
+                 Q 12 370 5 350 T 5 310 T 5 270 T 5 230 T 5 190 T 5 150 T 5 110 T 5 70 T 5 30 T 5 10
+                 Q 5 5 10 5" />
+      </g>
+      <g fill="currentColor" opacity="0.6">
+        <path d="M 30 3 Q 35 8 30 13 Q 25 8 30 3" />
+        <path d="M 70 7 Q 75 12 70 17 Q 65 12 70 7" />
+        <path d="M 110 3 Q 115 8 110 13 Q 105 8 110 3" />
+        <path d="M 150 7 Q 155 12 150 17 Q 145 12 150 7" />
+        <path d="M 190 3 Q 195 8 190 13 Q 185 8 190 3" />
+        <path d="M 230 7 Q 235 12 230 17 Q 225 12 230 7" />
+        <path d="M 270 3 Q 275 8 270 13 Q 265 8 270 3" />
+        
+        <path d="M 297 30 Q 292 35 287 30 Q 292 25 297 30" />
+        <path d="M 293 70 Q 288 75 283 70 Q 288 65 293 70" />
+        <path d="M 297 110 Q 292 115 287 110 Q 292 105 297 110" />
+        <path d="M 293 150 Q 288 155 283 150 Q 288 145 293 150" />
+        <path d="M 297 190 Q 292 195 287 190 Q 292 185 297 190" />
+        <path d="M 293 230 Q 288 235 283 230 Q 288 225 293 230" />
+        <path d="M 297 270 Q 292 275 287 270 Q 292 265 297 270" />
+        <path d="M 293 310 Q 288 315 283 310 Q 288 305 293 310" />
+        <path d="M 297 350 Q 292 355 287 350 Q 292 345 297 350" />
+        
+        <path d="M 270 397 Q 275 392 270 387 Q 265 392 270 397" />
+        <path d="M 230 393 Q 235 388 230 383 Q 225 388 230 393" />
+        <path d="M 190 397 Q 195 392 190 387 Q 185 392 190 397" />
+        <path d="M 150 393 Q 155 388 150 383 Q 145 388 150 393" />
+        <path d="M 110 397 Q 115 392 110 387 Q 105 392 110 397" />
+        <path d="M 70 393 Q 75 388 70 383 Q 65 388 70 393" />
+        <path d="M 30 397 Q 35 392 30 387 Q 25 392 30 397" />
+        
+        <path d="M 3 370 Q 8 365 13 370 Q 8 375 3 370" />
+        <path d="M 7 330 Q 12 325 17 330 Q 12 335 7 330" />
+        <path d="M 3 290 Q 8 285 13 290 Q 8 295 3 290" />
+        <path d="M 7 250 Q 12 245 17 250 Q 12 255 7 250" />
+        <path d="M 3 210 Q 8 205 13 210 Q 8 215 3 210" />
+        <path d="M 7 170 Q 12 165 17 170 Q 12 175 7 170" />
+        <path d="M 3 130 Q 8 125 13 130 Q 8 135 3 130" />
+        <path d="M 7 90 Q 12 85 17 90 Q 12 95 7 90" />
+        <path d="M 3 50 Q 8 45 13 50 Q 8 55 3 50" />
+      </g>
+      <g fill="currentColor" opacity="0.4">
+        <circle cx="50" cy="5" r="2" />
+        <circle cx="130" cy="5" r="2" />
+        <circle cx="210" cy="5" r="2" />
+        <circle cx="295" cy="50" r="2" />
+        <circle cx="295" cy="130" r="2" />
+        <circle cx="295" cy="210" r="2" />
+        <circle cx="295" cy="290" r="2" />
+        <circle cx="250" cy="395" r="2" />
+        <circle cx="170" cy="395" r="2" />
+        <circle cx="90" cy="395" r="2" />
+        <circle cx="5" cy="350" r="2" />
+        <circle cx="5" cy="270" r="2" />
+        <circle cx="5" cy="190" r="2" />
+        <circle cx="5" cy="110" r="2" />
+      </g>
     </svg>
   );
 }
@@ -220,19 +239,16 @@ export function FontCard({ font, previewText, fontSize, index = 0, color, onColo
       style={{ perspective: 1000 }}
       data-testid={`card-font-${font.id}`}
     >
-      {/* Intricate floral corner decorations */}
-      <FloralCorner className="top-0 left-0 text-foreground/80" />
-      <FloralCorner className="top-0 right-0 text-foreground/80 -scale-x-100" />
-      <FloralCorner className="bottom-0 left-0 text-foreground/80 -scale-y-100" />
-      <FloralCorner className="bottom-0 right-0 text-foreground/80 -scale-x-100 -scale-y-100" />
-      
-      {/* Vine edges connecting the corners */}
+      {/* Continuous vine border around the whole card */}
       <div className="text-foreground/80">
-        <VineEdge position="top" />
-        <VineEdge position="bottom" />
-        <VineEdge position="left" />
-        <VineEdge position="right" />
+        <VineBorder />
       </div>
+      
+      {/* Floral corner accents */}
+      <FloralCorner className="top-0 left-0 text-foreground/70 z-10" />
+      <FloralCorner className="top-0 right-0 text-foreground/70 -scale-x-100 z-10" />
+      <FloralCorner className="bottom-0 left-0 text-foreground/70 -scale-y-100 z-10" />
+      <FloralCorner className="bottom-0 right-0 text-foreground/70 -scale-x-100 -scale-y-100 z-10" />
 
       {/* Animated glow effect on hover */}
       <motion.div
