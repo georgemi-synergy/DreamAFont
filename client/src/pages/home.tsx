@@ -84,13 +84,14 @@ export default function Home() {
                  layout
                  className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"
                >
-                 <AnimatePresence>
-                   {filteredFonts.map((font) => (
+                 <AnimatePresence mode="popLayout">
+                   {filteredFonts.map((font, index) => (
                      <FontCard
                        key={font.id}
                        font={font}
                        previewText={text}
                        fontSize={fontSize}
+                       index={index}
                      />
                    ))}
                  </AnimatePresence>

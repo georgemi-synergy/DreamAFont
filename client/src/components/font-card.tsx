@@ -10,6 +10,7 @@ interface FontCardProps {
   font: Font;
   previewText: string;
   fontSize: number;
+  index?: number;
 }
 
 const presetColors = [
@@ -19,7 +20,46 @@ const presetColors = [
   "#8b5cf6", "#a855f7", "#d946ef", "#ec4899",
 ];
 
-export function FontCard({ font, previewText, fontSize }: FontCardProps) {
+const cardVariants = {
+  hidden: { 
+    opacity: 0, 
+    y: 80,
+    scale: 0.6,
+  },
+  visible: (index: number) => ({
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: {
+      type: "spring",
+      stiffness: 600,
+      damping: 15,
+      delay: index * 0.04,
+    },
+  }),
+  exit: {
+    opacity: 0,
+    scale: 0.6,
+    y: -40,
+    transition: {
+      duration: 0.15,
+    },
+  },
+  hover: {
+    y: -10,
+    scale: 1.03,
+    transition: {
+      type: "spring",
+      stiffness: 600,
+      damping: 15,
+    },
+  },
+  tap: {
+    scale: 0.95,
+  },
+};
+
+export function FontCard({ font, previewText, fontSize, index = 0 }: FontCardProps) {
   const [selectedColor, setSelectedColor] = useState("#000000");
   const [isOpen, setIsOpen] = useState(false);
 
@@ -40,37 +80,74 @@ export function FontCard({ font, previewText, fontSize }: FontCardProps) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, ease: "easeOut" }}
+      layout
+      variants={cardVariants}
+      initial="hidden"
+      animate="visible"
+      exit="exit"
+      whileHover="hover"
+      whileTap="tap"
+      custom={index}
       className={cn(
         "group relative flex flex-col h-full bg-card rounded-md border border-border/60",
-        "shadow-sm hover:shadow-xl hover:border-primary/20",
-        "transition-all duration-300 ease-out overflow-hidden"
+        "shadow-sm cursor-pointer",
+        "transition-shadow duration-300 ease-out overflow-visible"
       )}
+      style={{ perspective: 1000 }}
       data-testid={`card-font-${font.id}`}
     >
+      {/* Animated glow effect on hover */}
+      <motion.div
+        className="absolute inset-0 rounded-md opacity-0 pointer-events-none"
+        whileHover={{ opacity: 1 }}
+        style={{
+          background: `radial-gradient(circle at 50% 50%, ${selectedColor}15, transparent 70%)`,
+        }}
+      />
+
       {/* Header */}
-      <div className="flex items-center justify-between gap-2 p-4 border-b border-border/40 bg-muted/20">
+      <motion.div 
+        className="flex items-center justify-between gap-2 p-4 border-b border-border/40 bg-muted/20 relative z-10"
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ delay: index * 0.08 + 0.2, duration: 0.4 }}
+      >
         <h3 className="font-semibold text-lg text-foreground tracking-tight truncate">
           {font.name}
         </h3>
-        <span
+        <motion.span
+          initial={{ opacity: 0, scale: 0 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ 
+            delay: index * 0.08 + 0.3, 
+            type: "spring",
+            stiffness: 500,
+            damping: 25
+          }}
           className={cn(
             "text-[10px] uppercase font-bold tracking-wider px-2 py-1 rounded-full shrink-0",
             getCategoryBadgeStyle(font.category)
           )}
         >
           {font.category}
-        </span>
-      </div>
+        </motion.span>
+      </motion.div>
 
       {/* Preview Area */}
-      <div className="flex-1 p-6 flex flex-col justify-center min-h-[180px] overflow-hidden bg-white/50 dark:bg-black/20">
+      <div className="flex-1 p-6 flex flex-col justify-center min-h-[180px] overflow-hidden bg-white/50 dark:bg-black/20 relative z-10">
         <motion.div
           className="break-words leading-tight"
-          animate={{ color: selectedColor }}
-          transition={{ duration: 0.4, ease: "easeOut" }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ 
+            opacity: 1, 
+            y: 0,
+            color: selectedColor,
+          }}
+          transition={{ 
+            delay: index * 0.08 + 0.15,
+            duration: 0.5,
+            color: { duration: 0.4 }
+          }}
           style={{
             fontFamily: font.family,
             fontSize: `${fontSize}px`,
@@ -81,7 +158,12 @@ export function FontCard({ font, previewText, fontSize }: FontCardProps) {
       </div>
 
       {/* Color Picker */}
-      <div className="px-4 py-3 border-t border-border/40 bg-muted/10">
+      <motion.div 
+        className="px-4 py-3 border-t border-border/40 bg-muted/10 relative z-10"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: index * 0.08 + 0.25, duration: 0.4 }}
+      >
         <div className="flex items-center gap-3">
           <Popover open={isOpen} onOpenChange={setIsOpen}>
             <PopoverTrigger asChild>
@@ -93,7 +175,10 @@ export function FontCard({ font, previewText, fontSize }: FontCardProps) {
               >
                 <motion.div 
                   className="w-4 h-4 rounded-full border border-border"
-                  animate={{ backgroundColor: selectedColor }}
+                  animate={{ 
+                    backgroundColor: selectedColor,
+                    boxShadow: isOpen ? `0 0 10px ${selectedColor}` : "none"
+                  }}
                   transition={{ duration: 0.3 }}
                 />
                 <motion.div
@@ -109,22 +194,26 @@ export function FontCard({ font, previewText, fontSize }: FontCardProps) {
               {isOpen && (
                 <PopoverContent className="w-64 p-0 overflow-hidden" align="start" asChild forceMount>
                   <motion.div
-                    initial={{ opacity: 0, scale: 0.9, y: -10 }}
-                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.9, y: -10 }}
-                    transition={{ duration: 0.2, ease: "easeOut" }}
+                    initial={{ opacity: 0, scale: 0.8, y: -20, rotateX: -15 }}
+                    animate={{ opacity: 1, scale: 1, y: 0, rotateX: 0 }}
+                    exit={{ opacity: 0, scale: 0.8, y: -10 }}
+                    transition={{ 
+                      type: "spring",
+                      stiffness: 400,
+                      damping: 25
+                    }}
                   >
                     <div className="p-3 space-y-3">
                       {/* Color Wheel Input */}
                       <motion.div 
                         className="flex items-center gap-3"
-                        initial={{ opacity: 0, x: -20 }}
+                        initial={{ opacity: 0, x: -30 }}
                         animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.1, duration: 0.3 }}
+                        transition={{ delay: 0.1, type: "spring", stiffness: 300 }}
                       >
                         <motion.div
                           className="relative"
-                          whileHover={{ scale: 1.05 }}
+                          whileHover={{ scale: 1.1, rotate: 5 }}
                           whileTap={{ scale: 0.95 }}
                         >
                           <input
@@ -138,7 +227,7 @@ export function FontCard({ font, previewText, fontSize }: FontCardProps) {
                           <motion.div
                             className="absolute inset-0 rounded-full pointer-events-none"
                             animate={{
-                              boxShadow: `0 0 20px ${selectedColor}40`,
+                              boxShadow: `0 0 25px ${selectedColor}60`,
                             }}
                             transition={{ duration: 0.3 }}
                           />
@@ -148,9 +237,9 @@ export function FontCard({ font, previewText, fontSize }: FontCardProps) {
                           <motion.p 
                             className="text-xs text-muted-foreground uppercase font-mono"
                             key={selectedColor}
-                            initial={{ opacity: 0, y: 5 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.2 }}
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ type: "spring", stiffness: 500 }}
                           >
                             {selectedColor}
                           </motion.p>
@@ -159,29 +248,33 @@ export function FontCard({ font, previewText, fontSize }: FontCardProps) {
 
                       {/* Preset Colors Grid */}
                       <motion.div
-                        initial={{ opacity: 0, y: 10 }}
+                        initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.15, duration: 0.3 }}
+                        transition={{ delay: 0.15, type: "spring", stiffness: 300 }}
                       >
                         <p className="text-xs text-muted-foreground mb-2">Presets</p>
                         <div className="grid grid-cols-8 gap-1.5">
-                          {presetColors.map((color, index) => (
+                          {presetColors.map((color, i) => (
                             <motion.button
                               key={color}
                               onClick={() => setSelectedColor(color)}
-                              initial={{ opacity: 0, scale: 0 }}
-                              animate={{ opacity: 1, scale: 1 }}
+                              initial={{ opacity: 0, scale: 0, rotate: -180 }}
+                              animate={{ opacity: 1, scale: 1, rotate: 0 }}
                               transition={{ 
-                                delay: 0.2 + index * 0.02,
-                                duration: 0.2,
+                                delay: 0.2 + i * 0.03,
                                 type: "spring",
                                 stiffness: 500,
-                                damping: 25
+                                damping: 20
                               }}
-                              whileHover={{ scale: 1.2, zIndex: 10 }}
-                              whileTap={{ scale: 0.9 }}
+                              whileHover={{ 
+                                scale: 1.3, 
+                                zIndex: 10,
+                                rotate: 10,
+                                transition: { duration: 0.15 }
+                              }}
+                              whileTap={{ scale: 0.8 }}
                               className={cn(
-                                "w-6 h-6 rounded-md transition-shadow duration-150 border",
+                                "w-6 h-6 rounded-md border",
                                 selectedColor === color
                                   ? "ring-2 ring-offset-1 ring-primary border-white dark:border-gray-800"
                                   : "border-transparent"
@@ -208,7 +301,7 @@ export function FontCard({ font, previewText, fontSize }: FontCardProps) {
             Click to open color wheel
           </motion.span>
         </div>
-      </div>
+      </motion.div>
     </motion.div>
   );
 }
