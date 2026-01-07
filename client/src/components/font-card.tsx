@@ -44,7 +44,7 @@ function VineBorder() {
       fill="none"
       preserveAspectRatio="none"
     >
-      <g stroke="currentColor" strokeWidth="1.5" opacity="0.7">
+      <g stroke="currentColor" strokeWidth="2" opacity="1">
         <path d="M 10 5 Q 30 12 50 5 T 90 5 T 130 5 T 170 5 T 210 5 T 250 5 T 290 5
                  Q 295 5 295 10 
                  Q 288 30 295 50 T 295 90 T 295 130 T 295 170 T 295 210 T 295 250 T 295 290 T 295 330 T 295 370 T 295 390
@@ -54,7 +54,7 @@ function VineBorder() {
                  Q 12 370 5 350 T 5 310 T 5 270 T 5 230 T 5 190 T 5 150 T 5 110 T 5 70 T 5 30 T 5 10
                  Q 5 5 10 5" />
       </g>
-      <g fill="currentColor" opacity="0.6">
+      <g fill="currentColor" opacity="0.9">
         <path d="M 30 3 Q 35 8 30 13 Q 25 8 30 3" />
         <path d="M 70 7 Q 75 12 70 17 Q 65 12 70 7" />
         <path d="M 110 3 Q 115 8 110 13 Q 105 8 110 3" />
@@ -91,7 +91,7 @@ function VineBorder() {
         <path d="M 7 90 Q 12 85 17 90 Q 12 95 7 90" />
         <path d="M 3 50 Q 8 45 13 50 Q 8 55 3 50" />
       </g>
-      <g fill="currentColor" opacity="0.4">
+      <g fill="currentColor" opacity="0.8">
         <circle cx="50" cy="5" r="2" />
         <circle cx="130" cy="5" r="2" />
         <circle cx="210" cy="5" r="2" />
@@ -240,15 +240,15 @@ export function FontCard({ font, previewText, fontSize, index = 0, color, onColo
       data-testid={`card-font-${font.id}`}
     >
       {/* Continuous vine border around the whole card */}
-      <div className="text-foreground/80">
+      <div className="text-foreground">
         <VineBorder />
       </div>
       
       {/* Floral corner accents */}
-      <FloralCorner className="top-0 left-0 text-foreground/70 z-10" />
-      <FloralCorner className="top-0 right-0 text-foreground/70 -scale-x-100 z-10" />
-      <FloralCorner className="bottom-0 left-0 text-foreground/70 -scale-y-100 z-10" />
-      <FloralCorner className="bottom-0 right-0 text-foreground/70 -scale-x-100 -scale-y-100 z-10" />
+      <FloralCorner className="top-0 left-0 text-foreground z-10" />
+      <FloralCorner className="top-0 right-0 text-foreground -scale-x-100 z-10" />
+      <FloralCorner className="bottom-0 left-0 text-foreground -scale-y-100 z-10" />
+      <FloralCorner className="bottom-0 right-0 text-foreground -scale-x-100 -scale-y-100 z-10" />
 
       {/* Animated glow effect on hover */}
       <motion.div
