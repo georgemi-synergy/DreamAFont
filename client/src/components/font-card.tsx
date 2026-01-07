@@ -1,9 +1,9 @@
 import { useState } from "react";
 import type { Font } from "@shared/schema";
 import { cn } from "@/lib/utils";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useAnimation } from "framer-motion";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Palette } from "lucide-react";
+import { Palette, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface FontCardProps {
@@ -59,9 +59,38 @@ const cardVariants = {
   },
 };
 
+const textAnimations = {
+  bounce: {
+    y: [0, -20, 0, -10, 0, -5, 0],
+    transition: { duration: 0.6, ease: "easeOut" }
+  },
+  pulse: {
+    scale: [1, 1.1, 1, 1.05, 1],
+    transition: { duration: 0.5 }
+  },
+  shake: {
+    x: [0, -10, 10, -10, 10, -5, 5, 0],
+    transition: { duration: 0.5 }
+  },
+  flip: {
+    rotateX: [0, 360],
+    transition: { duration: 0.6 }
+  },
+  swing: {
+    rotate: [0, 10, -10, 5, -5, 0],
+    transition: { duration: 0.6 }
+  },
+};
+
 export function FontCard({ font, previewText, fontSize, index = 0 }: FontCardProps) {
   const [selectedColor, setSelectedColor] = useState("#000000");
   const [isOpen, setIsOpen] = useState(false);
+  const [currentAnim, setCurrentAnim] = useState<keyof typeof textAnimations>("bounce");
+  const textControls = useAnimation();
+
+  const playAnimation = async () => {
+    await textControls.start(textAnimations[currentAnim]);
+  };
 
   const getCategoryBadgeStyle = (category: string) => {
     switch (category.toLowerCase()) {
@@ -136,35 +165,63 @@ export function FontCard({ font, previewText, fontSize, index = 0 }: FontCardPro
       {/* Preview Area */}
       <div className="flex-1 p-6 flex flex-col justify-center min-h-[180px] overflow-hidden bg-white/50 dark:bg-black/20 relative z-10">
         <motion.div
-          className="break-words leading-tight"
+          className="break-words leading-tight origin-center"
           initial={{ opacity: 0, y: 20 }}
-          animate={{ 
-            opacity: 1, 
-            y: 0,
-            color: selectedColor,
-          }}
-          transition={{ 
-            delay: index * 0.08 + 0.15,
-            duration: 0.5,
-            color: { duration: 0.4 }
-          }}
+          animate={textControls}
           style={{
             fontFamily: font.family,
             fontSize: `${fontSize}px`,
+            color: selectedColor,
           }}
         >
           {previewText || "The quick brown fox jumps over the lazy dog."}
         </motion.div>
       </div>
 
-      {/* Color Picker */}
+      {/* Controls */}
       <motion.div 
         className="px-4 py-3 border-t border-border/40 bg-muted/10 relative z-10"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: index * 0.08 + 0.25, duration: 0.4 }}
+        transition={{ delay: index * 0.04 + 0.15, duration: 0.3 }}
       >
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 flex-wrap">
+          {/* Animation Button */}
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button 
+                variant="default" 
+                size="sm"
+                className="gap-2"
+                data-testid={`button-animate-${font.id}`}
+              >
+                <Play className="w-3 h-3" />
+                <span className="text-xs">Animate</span>
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-48 p-2" align="start">
+              <div className="space-y-1">
+                {(Object.keys(textAnimations) as Array<keyof typeof textAnimations>).map((anim) => (
+                  <Button
+                    key={anim}
+                    variant={currentAnim === anim ? "secondary" : "ghost"}
+                    size="sm"
+                    className="w-full justify-start capitalize"
+                    onClick={() => {
+                      setCurrentAnim(anim);
+                      textControls.start(textAnimations[anim]);
+                    }}
+                    data-testid={`button-anim-${anim}-${font.id}`}
+                  >
+                    <Play className="w-3 h-3 mr-2" />
+                    {anim}
+                  </Button>
+                ))}
+              </div>
+            </PopoverContent>
+          </Popover>
+
+          {/* Color Picker */}
           <Popover open={isOpen} onOpenChange={setIsOpen}>
             <PopoverTrigger asChild>
               <Button 
@@ -293,13 +350,6 @@ export function FontCard({ font, previewText, fontSize, index = 0 }: FontCardPro
             </AnimatePresence>
           </Popover>
 
-          <motion.span 
-            className="text-xs text-muted-foreground"
-            animate={{ opacity: isOpen ? 0 : 1 }}
-            transition={{ duration: 0.2 }}
-          >
-            Click to open color wheel
-          </motion.span>
         </div>
       </motion.div>
     </motion.div>
