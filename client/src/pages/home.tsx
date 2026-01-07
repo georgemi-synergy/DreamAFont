@@ -5,6 +5,7 @@ import { Toolbar } from "@/components/toolbar";
 import { LoadingGrid } from "@/components/loading-skeleton";
 import { AlertCircle, Search } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import pinkFlowersWallpaper from "@assets/generated_images/pink_flowers_wallpaper_pattern.png";
 
 export default function Home() {
   const { data: fonts, isLoading, error } = useFonts();
@@ -39,7 +40,14 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col">
+    <div 
+      className="min-h-screen text-foreground flex flex-col"
+      style={{
+        backgroundImage: `url(${pinkFlowersWallpaper})`,
+        backgroundRepeat: 'repeat',
+        backgroundSize: '300px 300px',
+      }}
+    >
       {/* Header / Brand */}
       <header className="bg-background pt-8 pb-6 px-4 sm:px-6 lg:px-8 border-b border-border/40">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-end md:items-center gap-4">
