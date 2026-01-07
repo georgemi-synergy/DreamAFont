@@ -11,6 +11,8 @@ interface FontCardProps {
   previewText: string;
   fontSize: number;
   index?: number;
+  color: string;
+  onColorChange: (color: string) => void;
 }
 
 const presetColors = [
@@ -82,8 +84,7 @@ const textAnimations = {
   },
 };
 
-export function FontCard({ font, previewText, fontSize, index = 0 }: FontCardProps) {
-  const [selectedColor, setSelectedColor] = useState("#000000");
+export function FontCard({ font, previewText, fontSize, index = 0, color, onColorChange }: FontCardProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [currentAnim, setCurrentAnim] = useState<keyof typeof textAnimations>("bounce");
   const textControls = useAnimation();
@@ -130,7 +131,7 @@ export function FontCard({ font, previewText, fontSize, index = 0 }: FontCardPro
         className="absolute inset-0 rounded-md opacity-0 pointer-events-none"
         whileHover={{ opacity: 1 }}
         style={{
-          background: `radial-gradient(circle at 50% 50%, ${selectedColor}15, transparent 70%)`,
+          background: `radial-gradient(circle at 50% 50%, ${color}15, transparent 70%)`,
         }}
       />
 
@@ -171,7 +172,7 @@ export function FontCard({ font, previewText, fontSize, index = 0 }: FontCardPro
           style={{
             fontFamily: font.family,
             fontSize: `${fontSize}px`,
-            color: selectedColor,
+            color: color,
           }}
         >
           {previewText || "The quick brown fox jumps over the lazy dog."}
@@ -233,8 +234,8 @@ export function FontCard({ font, previewText, fontSize, index = 0 }: FontCardPro
                 <motion.div 
                   className="w-4 h-4 rounded-full border border-border"
                   animate={{ 
-                    backgroundColor: selectedColor,
-                    boxShadow: isOpen ? `0 0 10px ${selectedColor}` : "none"
+                    backgroundColor: color,
+                    boxShadow: isOpen ? `0 0 10px ${color}` : "none"
                   }}
                   transition={{ duration: 0.3 }}
                 />
@@ -275,8 +276,8 @@ export function FontCard({ font, previewText, fontSize, index = 0 }: FontCardPro
                         >
                           <input
                             type="color"
-                            value={selectedColor}
-                            onChange={(e) => setSelectedColor(e.target.value)}
+                            value={color}
+                            onChange={(e) => onColorChange(e.target.value)}
                             className="w-14 h-14 rounded-full cursor-pointer border-2 border-border p-0 bg-transparent"
                             style={{ WebkitAppearance: "none" }}
                             data-testid={`input-color-wheel-${font.id}`}
@@ -284,7 +285,7 @@ export function FontCard({ font, previewText, fontSize, index = 0 }: FontCardPro
                           <motion.div
                             className="absolute inset-0 rounded-full pointer-events-none"
                             animate={{
-                              boxShadow: `0 0 25px ${selectedColor}60`,
+                              boxShadow: `0 0 25px ${color}60`,
                             }}
                             transition={{ duration: 0.3 }}
                           />
@@ -293,12 +294,12 @@ export function FontCard({ font, previewText, fontSize, index = 0 }: FontCardPro
                           <p className="text-sm font-medium">Pick a color</p>
                           <motion.p 
                             className="text-xs text-muted-foreground uppercase font-mono"
-                            key={selectedColor}
+                            key={color}
                             initial={{ opacity: 0, scale: 0.8 }}
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ type: "spring", stiffness: 500 }}
                           >
-                            {selectedColor}
+                            {color}
                           </motion.p>
                         </div>
                       </motion.div>
@@ -311,10 +312,10 @@ export function FontCard({ font, previewText, fontSize, index = 0 }: FontCardPro
                       >
                         <p className="text-xs text-muted-foreground mb-2">Presets</p>
                         <div className="grid grid-cols-8 gap-1.5">
-                          {presetColors.map((color, i) => (
+                          {presetColors.map((presetColor, i) => (
                             <motion.button
-                              key={color}
-                              onClick={() => setSelectedColor(color)}
+                              key={presetColor}
+                              onClick={() => onColorChange(presetColor)}
                               initial={{ opacity: 0, scale: 0, rotate: -180 }}
                               animate={{ opacity: 1, scale: 1, rotate: 0 }}
                               transition={{ 
@@ -332,13 +333,13 @@ export function FontCard({ font, previewText, fontSize, index = 0 }: FontCardPro
                               whileTap={{ scale: 0.8 }}
                               className={cn(
                                 "w-6 h-6 rounded-md border",
-                                selectedColor === color
+                                color === presetColor
                                   ? "ring-2 ring-offset-1 ring-primary border-white dark:border-gray-800"
                                   : "border-transparent"
                               )}
-                              style={{ backgroundColor: color }}
-                              title={color}
-                              data-testid={`button-preset-${color.replace('#', '')}-${font.id}`}
+                              style={{ backgroundColor: presetColor }}
+                              title={presetColor}
+                              data-testid={`button-preset-${presetColor.replace('#', '')}-${font.id}`}
                             />
                           ))}
                         </div>

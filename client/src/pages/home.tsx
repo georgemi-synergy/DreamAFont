@@ -13,6 +13,7 @@ export default function Home() {
   const [fontSize, setFontSize] = useState(32);
   const [category, setCategory] = useState("all");
   const [search, setSearch] = useState("");
+  const [globalColor, setGlobalColor] = useState("#000000");
 
   const filteredFonts = fonts?.filter(font => {
     const matchesCategory = category === "all" || font.category === category;
@@ -92,6 +93,8 @@ export default function Home() {
                        previewText={text}
                        fontSize={fontSize}
                        index={index}
+                       color={globalColor}
+                       onColorChange={setGlobalColor}
                      />
                    ))}
                  </AnimatePresence>
