@@ -15,3 +15,5 @@ export type Font = typeof fonts.$inferSelect;
 export type InsertFont = z.infer<typeof insertFontSchema>;
 
 export type FontResponse = Font;
+
+export * from "./models/chat";
