@@ -166,7 +166,7 @@ export function FontCard({ font, previewText, fontSize, index = 0 }: FontCardPro
       <div className="flex-1 p-6 flex flex-col justify-center min-h-[180px] overflow-hidden bg-white/50 dark:bg-black/20 relative z-10">
         <motion.div
           className="break-words leading-tight origin-center"
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 1 }}
           animate={textControls}
           style={{
             fontFamily: font.family,
