@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { Font } from "@shared/schema";
 import { cn } from "@/lib/utils";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Palette } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -21,6 +21,7 @@ const presetColors = [
 
 export function FontCard({ font, previewText, fontSize }: FontCardProps) {
   const [selectedColor, setSelectedColor] = useState("#000000");
+  const [isOpen, setIsOpen] = useState(false);
 
   const getCategoryBadgeStyle = (category: string) => {
     switch (category.toLowerCase()) {
@@ -66,22 +67,23 @@ export function FontCard({ font, previewText, fontSize }: FontCardProps) {
 
       {/* Preview Area */}
       <div className="flex-1 p-6 flex flex-col justify-center min-h-[180px] overflow-hidden bg-white/50 dark:bg-black/20">
-        <div
-          className="break-words leading-tight transition-all duration-300"
+        <motion.div
+          className="break-words leading-tight"
+          animate={{ color: selectedColor }}
+          transition={{ duration: 0.4, ease: "easeOut" }}
           style={{
             fontFamily: font.family,
             fontSize: `${fontSize}px`,
-            color: selectedColor,
           }}
         >
           {previewText || "The quick brown fox jumps over the lazy dog."}
-        </div>
+        </motion.div>
       </div>
 
       {/* Color Picker */}
       <div className="px-4 py-3 border-t border-border/40 bg-muted/10">
         <div className="flex items-center gap-3">
-          <Popover>
+          <Popover open={isOpen} onOpenChange={setIsOpen}>
             <PopoverTrigger asChild>
               <Button 
                 variant="outline" 
@@ -89,59 +91,122 @@ export function FontCard({ font, previewText, fontSize }: FontCardProps) {
                 className="gap-2"
                 data-testid={`button-color-picker-${font.id}`}
               >
-                <div 
+                <motion.div 
                   className="w-4 h-4 rounded-full border border-border"
-                  style={{ backgroundColor: selectedColor }}
+                  animate={{ backgroundColor: selectedColor }}
+                  transition={{ duration: 0.3 }}
                 />
-                <Palette className="w-4 h-4" />
+                <motion.div
+                  animate={{ rotate: isOpen ? 180 : 0 }}
+                  transition={{ duration: 0.3, ease: "easeInOut" }}
+                >
+                  <Palette className="w-4 h-4" />
+                </motion.div>
                 <span className="text-xs">Color</span>
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-64 p-3" align="start">
-              <div className="space-y-3">
-                {/* Color Wheel Input */}
-                <div className="flex items-center gap-3">
-                  <input
-                    type="color"
-                    value={selectedColor}
-                    onChange={(e) => setSelectedColor(e.target.value)}
-                    className="w-12 h-12 rounded-md cursor-pointer border-0 p-0 bg-transparent"
-                    data-testid={`input-color-wheel-${font.id}`}
-                  />
-                  <div className="flex-1">
-                    <p className="text-sm font-medium">Pick a color</p>
-                    <p className="text-xs text-muted-foreground uppercase">{selectedColor}</p>
-                  </div>
-                </div>
+            <AnimatePresence>
+              {isOpen && (
+                <PopoverContent className="w-64 p-0 overflow-hidden" align="start" asChild forceMount>
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.9, y: -10 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.9, y: -10 }}
+                    transition={{ duration: 0.2, ease: "easeOut" }}
+                  >
+                    <div className="p-3 space-y-3">
+                      {/* Color Wheel Input */}
+                      <motion.div 
+                        className="flex items-center gap-3"
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.1, duration: 0.3 }}
+                      >
+                        <motion.div
+                          className="relative"
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                        >
+                          <input
+                            type="color"
+                            value={selectedColor}
+                            onChange={(e) => setSelectedColor(e.target.value)}
+                            className="w-14 h-14 rounded-full cursor-pointer border-2 border-border p-0 bg-transparent"
+                            style={{ WebkitAppearance: "none" }}
+                            data-testid={`input-color-wheel-${font.id}`}
+                          />
+                          <motion.div
+                            className="absolute inset-0 rounded-full pointer-events-none"
+                            animate={{
+                              boxShadow: `0 0 20px ${selectedColor}40`,
+                            }}
+                            transition={{ duration: 0.3 }}
+                          />
+                        </motion.div>
+                        <div className="flex-1">
+                          <p className="text-sm font-medium">Pick a color</p>
+                          <motion.p 
+                            className="text-xs text-muted-foreground uppercase font-mono"
+                            key={selectedColor}
+                            initial={{ opacity: 0, y: 5 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.2 }}
+                          >
+                            {selectedColor}
+                          </motion.p>
+                        </div>
+                      </motion.div>
 
-                {/* Preset Colors Grid */}
-                <div>
-                  <p className="text-xs text-muted-foreground mb-2">Presets</p>
-                  <div className="grid grid-cols-8 gap-1">
-                    {presetColors.map((color) => (
-                      <button
-                        key={color}
-                        onClick={() => setSelectedColor(color)}
-                        className={cn(
-                          "w-6 h-6 rounded-md transition-all duration-150 border",
-                          selectedColor === color
-                            ? "ring-2 ring-offset-1 ring-primary border-white dark:border-gray-800"
-                            : "border-transparent hover:scale-110"
-                        )}
-                        style={{ backgroundColor: color }}
-                        title={color}
-                        data-testid={`button-preset-${color.replace('#', '')}-${font.id}`}
-                      />
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </PopoverContent>
+                      {/* Preset Colors Grid */}
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.15, duration: 0.3 }}
+                      >
+                        <p className="text-xs text-muted-foreground mb-2">Presets</p>
+                        <div className="grid grid-cols-8 gap-1.5">
+                          {presetColors.map((color, index) => (
+                            <motion.button
+                              key={color}
+                              onClick={() => setSelectedColor(color)}
+                              initial={{ opacity: 0, scale: 0 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              transition={{ 
+                                delay: 0.2 + index * 0.02,
+                                duration: 0.2,
+                                type: "spring",
+                                stiffness: 500,
+                                damping: 25
+                              }}
+                              whileHover={{ scale: 1.2, zIndex: 10 }}
+                              whileTap={{ scale: 0.9 }}
+                              className={cn(
+                                "w-6 h-6 rounded-md transition-shadow duration-150 border",
+                                selectedColor === color
+                                  ? "ring-2 ring-offset-1 ring-primary border-white dark:border-gray-800"
+                                  : "border-transparent"
+                              )}
+                              style={{ backgroundColor: color }}
+                              title={color}
+                              data-testid={`button-preset-${color.replace('#', '')}-${font.id}`}
+                            />
+                          ))}
+                        </div>
+                      </motion.div>
+                    </div>
+                  </motion.div>
+                </PopoverContent>
+              )}
+            </AnimatePresence>
           </Popover>
 
-          <span className="text-xs text-muted-foreground">
+          <motion.span 
+            className="text-xs text-muted-foreground"
+            animate={{ opacity: isOpen ? 0 : 1 }}
+            transition={{ duration: 0.2 }}
+          >
             Click to open color wheel
-          </span>
+          </motion.span>
         </div>
       </div>
     </motion.div>
