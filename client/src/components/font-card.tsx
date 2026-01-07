@@ -126,9 +126,11 @@ export function FontCard({ font, previewText, fontSize, index = 0, color, onColo
       whileTap="tap"
       custom={index}
       className={cn(
-        "group relative flex flex-col h-full bg-card rounded-md border border-border/60",
+        "group relative flex flex-col h-full bg-card rounded-md",
         "shadow-sm cursor-pointer",
-        "transition-shadow duration-300 ease-out overflow-visible"
+        "transition-shadow duration-300 ease-out overflow-visible",
+        "border-4 border-double border-primary/30",
+        "before:absolute before:inset-1 before:border before:border-primary/20 before:rounded before:pointer-events-none"
       )}
       style={{ perspective: 1000 }}
       data-testid={`card-font-${font.id}`}
