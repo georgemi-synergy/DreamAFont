@@ -44,7 +44,7 @@ function VineEdge({ position }: { position: "top" | "bottom" | "left" | "right" 
       viewBox={isHorizontal ? "0 0 200 20" : "0 0 20 200"}
       className={cn(
         "absolute pointer-events-none",
-        isHorizontal ? "h-5 left-16 right-16" : "w-5 top-16 bottom-16",
+        isHorizontal ? "h-5 left-12 right-12" : "w-5 top-12 bottom-12",
         position === "top" && "top-0",
         position === "bottom" && "bottom-0 rotate-180",
         position === "left" && "left-0",
