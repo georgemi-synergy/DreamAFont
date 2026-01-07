@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useFonts } from "@/hooks/use-fonts";
 import { FontCard } from "@/components/font-card";
 import { Toolbar } from "@/components/toolbar";
 import { LoadingGrid } from "@/components/loading-skeleton";
-import { AlertCircle, Search } from "lucide-react";
+import { AlertCircle, Search, Volume2, VolumeX } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Button } from "@/components/ui/button";
 import pinkFlowersWallpaper from "@assets/generated_images/pink_flowers_wallpaper_pattern.png";
+import dreamyMusic from "@assets/dreamy-ambient.mp3";
 
 export default function Home() {
   const { data: fonts, isLoading, error } = useFonts();
@@ -16,6 +18,19 @@ export default function Home() {
   const [search, setSearch] = useState("");
   const [globalColor, setGlobalColor] = useState("#000000");
   const [aiStyles, setAiStyles] = useState<React.CSSProperties>({});
+  const [isPlaying, setIsPlaying] = useState(false);
+  const audioRef = useRef<HTMLAudioElement>(null);
+
+  const toggleMusic = () => {
+    if (audioRef.current) {
+      if (isPlaying) {
+        audioRef.current.pause();
+      } else {
+        audioRef.current.play();
+      }
+      setIsPlaying(!isPlaying);
+    }
+  };
 
   const filteredFonts = fonts?.filter(font => {
     const matchesCategory = category === "all" || font.category === category;
@@ -41,6 +56,9 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
+      {/* Background Music */}
+      <audio ref={audioRef} src={dreamyMusic} loop />
+      
       {/* Header / Brand */}
       <header className="bg-background pt-8 pb-6 px-4 sm:px-6 lg:px-8 border-b border-border/40">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-end md:items-center gap-4">
@@ -52,8 +70,19 @@ export default function Home() {
               Do you want a fancy font or animation for work or school? Well you've come to the right place.
             </p>
           </div>
-          <div className="text-sm font-medium text-muted-foreground bg-muted/30 px-4 py-2 rounded-full border border-border/40">
-            {isLoading ? "Loading library..." : `${fonts?.length || 0} fonts available`}
+          <div className="flex items-center gap-3">
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={toggleMusic}
+              className="bg-pink-50 dark:bg-pink-900/20 border-pink-200 dark:border-pink-800/40"
+              data-testid="button-toggle-music"
+            >
+              {isPlaying ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
+            </Button>
+            <div className="text-sm font-medium text-muted-foreground bg-muted/30 px-4 py-2 rounded-full border border-border/40">
+              {isLoading ? "Loading library..." : `${fonts?.length || 0} fonts available`}
+            </div>
           </div>
         </div>
       </header>
