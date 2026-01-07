@@ -118,6 +118,23 @@ export class MemStorage implements IStorage {
       { name: "Eater", family: "Eater", category: "Spooky" },
       { name: "Metal Mania", family: "Metal Mania", category: "Spooky" },
       { name: "Freckle Face", family: "Freckle Face", category: "Spooky" },
+      
+      // More fonts
+      { name: "Josefin Sans", family: "Josefin Sans", category: "Sans-serif" },
+      { name: "Barlow", family: "Barlow", category: "Sans-serif" },
+      { name: "Karla", family: "Karla", category: "Sans-serif" },
+      { name: "Noto Sans", family: "Noto Sans", category: "Sans-serif" },
+      { name: "PT Sans", family: "PT Sans", category: "Sans-serif" },
+      { name: "Cabin", family: "Cabin", category: "Sans-serif" },
+      { name: "Archivo", family: "Archivo", category: "Sans-serif" },
+      { name: "Lexend", family: "Lexend", category: "Sans-serif" },
+      { name: "Exo 2", family: "Exo 2", category: "Sans-serif" },
+      { name: "Philosopher", family: "Philosopher", category: "Serif" },
+      { name: "Marcellus", family: "Marcellus", category: "Serif" },
+      { name: "Cardo", family: "Cardo", category: "Serif" },
+      { name: "Antic Slab", family: "Antic Slab", category: "Serif" },
+      { name: "Arvo", family: "Arvo", category: "Serif" },
+      { name: "Zilla Slab", family: "Zilla Slab", category: "Serif" },
     ];
 
     seedData.forEach(font => {
