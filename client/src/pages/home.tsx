@@ -40,16 +40,16 @@ export default function Home() {
   }
 
   return (
-    <div 
-      className="min-h-screen text-foreground flex flex-col"
-      style={{
-        backgroundImage: `url(${pinkFlowersWallpaper})`,
-        backgroundRepeat: 'repeat',
-        backgroundSize: '300px 300px',
-      }}
-    >
+    <div className="min-h-screen bg-background text-foreground flex flex-col">
       {/* Header / Brand */}
-      <header className="bg-background pt-8 pb-6 px-4 sm:px-6 lg:px-8 border-b border-border/40">
+      <header 
+        className="pt-8 pb-6 px-4 sm:px-6 lg:px-8 border-b border-border/40"
+        style={{
+          backgroundImage: `url(${pinkFlowersWallpaper})`,
+          backgroundRepeat: 'repeat',
+          backgroundSize: '200px 200px',
+        }}
+      >
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-end md:items-center gap-4">
           <div>
             <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
