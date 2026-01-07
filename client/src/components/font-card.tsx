@@ -3,7 +3,7 @@ import type { Font } from "@shared/schema";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence, useAnimation } from "framer-motion";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Palette, Play, Bold, Italic, Underline, Copy, Check } from "lucide-react";
+import { Palette, Play, Bold, Italic, Underline, Copy, Check, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 
@@ -120,6 +120,8 @@ interface FontCardProps {
   color: string;
   onColorChange: (color: string) => void;
   aiStyles?: React.CSSProperties;
+  isFavorite?: boolean;
+  onToggleFavorite?: (fontId: number) => void;
 }
 
 const presetColors = [
@@ -189,9 +191,33 @@ const textAnimations = {
     rotate: [0, 10, -10, 5, -5, 0],
     transition: { duration: 0.6 }
   },
+  rainbow: {
+    color: ["#ff0000", "#ff7f00", "#ffff00", "#00ff00", "#0000ff", "#4b0082", "#9400d3", "#ff0000"],
+    transition: { duration: 2, repeat: 2 }
+  },
+  sparkle: {
+    scale: [1, 1.2, 0.9, 1.1, 1],
+    opacity: [1, 0.8, 1, 0.9, 1],
+    rotate: [0, 5, -5, 3, 0],
+    transition: { duration: 0.8 }
+  },
+  wave: {
+    y: [0, -15, 0, -10, 0],
+    rotate: [0, 3, -3, 2, 0],
+    transition: { duration: 0.7 }
+  },
+  jello: {
+    skewX: [0, -10, 8, -6, 4, -2, 0],
+    skewY: [0, -2, 1.5, -1, 0.5, 0],
+    transition: { duration: 0.8 }
+  },
+  glow: {
+    textShadow: ["0 0 0px currentColor", "0 0 20px currentColor", "0 0 40px currentColor", "0 0 20px currentColor", "0 0 0px currentColor"],
+    transition: { duration: 1.5 }
+  },
 };
 
-export function FontCard({ font, previewText, fontSize, index = 0, color, onColorChange, aiStyles = {} }: FontCardProps) {
+export function FontCard({ font, previewText, fontSize, index = 0, color, onColorChange, aiStyles = {}, isFavorite = false, onToggleFavorite }: FontCardProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [currentAnim, setCurrentAnim] = useState<keyof typeof textAnimations>("bounce");
   const [isBold, setIsBold] = useState(false);
@@ -304,6 +330,15 @@ export function FontCard({ font, previewText, fontSize, index = 0, color, onColo
             ) : (
               <Copy className="w-3.5 h-3.5" />
             )}
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => onToggleFavorite?.(font.id)}
+            className="h-7 w-7 shrink-0"
+            data-testid={`button-favorite-${font.id}`}
+          >
+            <Heart className={cn("w-3.5 h-3.5 transition-colors", isFavorite ? "fill-red-500 text-red-500" : "")} />
           </Button>
         </div>
         <motion.span

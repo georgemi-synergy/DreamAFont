@@ -1,9 +1,9 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useFonts } from "@/hooks/use-fonts";
 import { FontCard } from "@/components/font-card";
 import { Toolbar } from "@/components/toolbar";
 import { LoadingGrid } from "@/components/loading-skeleton";
-import { AlertCircle, Search, Volume2, VolumeX } from "lucide-react";
+import { AlertCircle, Search, Volume2, VolumeX, Moon, Sun } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import pinkFlowersWallpaper from "@assets/generated_images/pink_flowers_wallpaper_pattern.png";
@@ -19,7 +19,37 @@ export default function Home() {
   const [globalColor, setGlobalColor] = useState("#000000");
   const [aiStyles, setAiStyles] = useState<React.CSSProperties>({});
   const [isPlaying, setIsPlaying] = useState(false);
+  const [showFavorites, setShowFavorites] = useState(false);
+  const [favorites, setFavorites] = useState<number[]>(() => {
+    const saved = localStorage.getItem('dreamafont-favorites');
+    return saved ? JSON.parse(saved) : [];
+  });
+  const [isDark, setIsDark] = useState(() => {
+    const saved = localStorage.getItem('dreamafont-theme');
+    return saved === 'dark';
+  });
   const audioRef = useRef<HTMLAudioElement>(null);
+
+  useEffect(() => {
+    localStorage.setItem('dreamafont-favorites', JSON.stringify(favorites));
+  }, [favorites]);
+
+  useEffect(() => {
+    localStorage.setItem('dreamafont-theme', isDark ? 'dark' : 'light');
+    if (isDark) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [isDark]);
+
+  const toggleFavorite = (fontId: number) => {
+    setFavorites(prev => 
+      prev.includes(fontId) 
+        ? prev.filter(id => id !== fontId)
+        : [...prev, fontId]
+    );
+  };
 
   const toggleMusic = () => {
     if (audioRef.current) {
@@ -35,7 +65,8 @@ export default function Home() {
   const filteredFonts = fonts?.filter(font => {
     const matchesCategory = category === "all" || font.category === category;
     const matchesSearch = font.name.toLowerCase().includes(search.toLowerCase());
-    return matchesCategory && matchesSearch;
+    const matchesFavorites = !showFavorites || favorites.includes(font.id);
+    return matchesCategory && matchesSearch && matchesFavorites;
   });
 
   if (error) {
@@ -74,6 +105,15 @@ export default function Home() {
             <Button
               variant="outline"
               size="icon"
+              onClick={() => setIsDark(!isDark)}
+              className="bg-pink-50 dark:bg-pink-900/20 border-pink-200 dark:border-pink-800/40"
+              data-testid="button-toggle-theme"
+            >
+              {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+            </Button>
+            <Button
+              variant="outline"
+              size="icon"
               onClick={toggleMusic}
               className="bg-pink-50 dark:bg-pink-900/20 border-pink-200 dark:border-pink-800/40"
               data-testid="button-toggle-music"
@@ -99,6 +139,9 @@ export default function Home() {
         setSearch={setSearch}
         aiStyles={aiStyles}
         setAiStyles={setAiStyles}
+        showFavorites={showFavorites}
+        setShowFavorites={setShowFavorites}
+        favoritesCount={favorites.length}
       />
 
       {/* Main Grid */}
@@ -137,6 +180,8 @@ export default function Home() {
                        color={globalColor}
                        onColorChange={setGlobalColor}
                        aiStyles={aiStyles}
+                       isFavorite={favorites.includes(font.id)}
+                       onToggleFavorite={toggleFavorite}
                      />
                    ))}
                  </AnimatePresence>

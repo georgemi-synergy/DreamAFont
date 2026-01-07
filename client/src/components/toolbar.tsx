@@ -10,8 +10,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Type, ALargeSmall, Search, Sparkles, Loader2 } from "lucide-react";
+import { Type, ALargeSmall, Search, Sparkles, Loader2, Heart } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
+import { cn } from "@/lib/utils";
 
 interface ToolbarProps {
   text: string;
@@ -24,7 +25,17 @@ interface ToolbarProps {
   setSearch: (val: string) => void;
   aiStyles: React.CSSProperties;
   setAiStyles: (styles: React.CSSProperties) => void;
+  showFavorites: boolean;
+  setShowFavorites: (val: boolean) => void;
+  favoritesCount: number;
 }
+
+const fontSizePresets = [
+  { label: "Body", size: 18 },
+  { label: "Subheading", size: 28 },
+  { label: "Heading", size: 48 },
+  { label: "Display", size: 72 },
+];
 
 export function Toolbar({
   text,
@@ -36,7 +47,10 @@ export function Toolbar({
   search,
   setSearch,
   aiStyles,
-  setAiStyles
+  setAiStyles,
+  showFavorites,
+  setShowFavorites,
+  favoritesCount
 }: ToolbarProps) {
   const [aiPrompt, setAiPrompt] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
@@ -102,8 +116,24 @@ export function Toolbar({
             {/* Controls Container */}
             <div className="flex flex-col sm:flex-row gap-4 items-center">
               
+              {/* Font Size Presets */}
+              <div className="flex items-center gap-1 bg-pink-50 dark:bg-pink-900/20 px-2 py-1.5 rounded-lg border border-pink-200 dark:border-pink-800/40">
+                {fontSizePresets.map(preset => (
+                  <Button
+                    key={preset.label}
+                    variant={fontSize === preset.size ? "secondary" : "ghost"}
+                    size="sm"
+                    onClick={() => setFontSize(preset.size)}
+                    className="text-xs px-2"
+                    data-testid={`button-preset-${preset.label.toLowerCase()}`}
+                  >
+                    {preset.label}
+                  </Button>
+                ))}
+              </div>
+
               {/* Font Size Slider */}
-              <div className="flex items-center gap-3 min-w-[180px] bg-pink-50 dark:bg-pink-900/20 px-3 py-2 rounded-lg border border-pink-200 dark:border-pink-800/40">
+              <div className="flex items-center gap-3 min-w-[150px] bg-pink-50 dark:bg-pink-900/20 px-3 py-2 rounded-lg border border-pink-200 dark:border-pink-800/40">
                 <ALargeSmall className="w-4 h-4 text-pink-400" />
                 <Slider
                   value={[fontSize]}
@@ -146,6 +176,23 @@ export function Toolbar({
                   data-testid="input-search-fonts"
                  />
                </div>
+
+              {/* Favorites Toggle */}
+              <Button
+                variant={showFavorites ? "default" : "outline"}
+                size="default"
+                onClick={() => setShowFavorites(!showFavorites)}
+                className={cn(
+                  "gap-2",
+                  showFavorites 
+                    ? "bg-red-500 hover:bg-red-600 text-white" 
+                    : "bg-pink-50 dark:bg-pink-900/20 border-pink-200 dark:border-pink-800/40"
+                )}
+                data-testid="button-toggle-favorites"
+              >
+                <Heart className={cn("w-4 h-4", showFavorites && "fill-white")} />
+                <span className="text-xs">{favoritesCount}</span>
+              </Button>
             </div>
           </TabsContent>
 
