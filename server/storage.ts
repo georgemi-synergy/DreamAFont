@@ -1,37 +1,63 @@
-import { type User, type InsertUser } from "@shared/schema";
-import { randomUUID } from "crypto";
-
-// modify the interface with any CRUD methods
-// you might need
+import { type Font, type InsertFont } from "@shared/schema";
 
 export interface IStorage {
-  getUser(id: string): Promise<User | undefined>;
-  getUserByUsername(username: string): Promise<User | undefined>;
-  createUser(user: InsertUser): Promise<User>;
+  getFonts(): Promise<Font[]>;
+  seedFonts(): Promise<void>;
 }
 
 export class MemStorage implements IStorage {
-  private users: Map<string, User>;
+  private fonts: Font[];
+  private idCounter: number;
 
   constructor() {
-    this.users = new Map();
+    this.fonts = [];
+    this.idCounter = 1;
   }
 
-  async getUser(id: string): Promise<User | undefined> {
-    return this.users.get(id);
+  async getFonts(): Promise<Font[]> {
+    return this.fonts;
   }
 
-  async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.username === username,
-    );
-  }
+  async seedFonts(): Promise<void> {
+    if (this.fonts.length > 0) return;
 
-  async createUser(insertUser: InsertUser): Promise<User> {
-    const id = randomUUID();
-    const user: User = { ...insertUser, id };
-    this.users.set(id, user);
-    return user;
+    const seedData: Omit<Font, "id">[] = [
+      // Sans-serif
+      { name: "Inter", family: "Inter", category: "Sans-serif" },
+      { name: "Roboto", family: "Roboto", category: "Sans-serif" },
+      { name: "Open Sans", family: "Open Sans", category: "Sans-serif" },
+      { name: "Montserrat", family: "Montserrat", category: "Sans-serif" },
+      { name: "DM Sans", family: "DM Sans", category: "Sans-serif" },
+      { name: "Plus Jakarta Sans", family: "Plus Jakarta Sans", category: "Sans-serif" },
+      { name: "Outfit", family: "Outfit", category: "Sans-serif" },
+      { name: "IBM Plex Sans", family: "IBM Plex Sans", category: "Sans-serif" },
+      { name: "Geist", family: "Geist", category: "Sans-serif" },
+      
+      // Serif
+      { name: "Playfair Display", family: "Playfair Display", category: "Serif" },
+      { name: "Lora", family: "Lora", category: "Serif" },
+      { name: "Merriweather", family: "Merriweather", category: "Serif" },
+      { name: "Libre Baskerville", family: "Libre Baskerville", category: "Serif" },
+      { name: "Source Serif 4", family: "Source Serif 4", category: "Serif" },
+      
+      // Monospace
+      { name: "Fira Code", family: "Fira Code", category: "Monospace" },
+      { name: "Roboto Mono", family: "Roboto Mono", category: "Monospace" },
+      { name: "JetBrains Mono", family: "JetBrains Mono", category: "Monospace" },
+      { name: "Space Mono", family: "Space Mono", category: "Monospace" },
+      { name: "Source Code Pro", family: "Source Code Pro", category: "Monospace" },
+      { name: "IBM Plex Mono", family: "IBM Plex Mono", category: "Monospace" },
+      { name: "Geist Mono", family: "Geist Mono", category: "Monospace" },
+      
+      // Display
+      { name: "Architects Daughter", family: "Architects Daughter", category: "Display" },
+      { name: "Oxanium", family: "Oxanium", category: "Display" },
+      { name: "Space Grotesk", family: "Space Grotesk", category: "Display" },
+    ];
+
+    seedData.forEach(font => {
+      this.fonts.push({ ...font, id: this.idCounter++ });
+    });
   }
 }
 
