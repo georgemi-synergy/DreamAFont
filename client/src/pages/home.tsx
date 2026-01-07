@@ -14,6 +14,7 @@ export default function Home() {
   const [category, setCategory] = useState("all");
   const [search, setSearch] = useState("");
   const [globalColor, setGlobalColor] = useState("#000000");
+  const [aiStyles, setAiStyles] = useState<React.CSSProperties>({});
 
   const filteredFonts = fonts?.filter(font => {
     const matchesCategory = category === "all" || font.category === category;
@@ -66,6 +67,8 @@ export default function Home() {
         setCategory={setCategory}
         search={search}
         setSearch={setSearch}
+        aiStyles={aiStyles}
+        setAiStyles={setAiStyles}
       />
 
       {/* Main Grid */}
@@ -95,6 +98,7 @@ export default function Home() {
                        index={index}
                        color={globalColor}
                        onColorChange={setGlobalColor}
+                       aiStyles={aiStyles}
                      />
                    ))}
                  </AnimatePresence>

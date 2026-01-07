@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Slider } from "@/components/ui/slider";
 import { 
   Select, 
@@ -7,7 +8,10 @@ import {
   SelectValue 
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { Type, ALargeSmall, Search } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Type, ALargeSmall, Search, Sparkles, Loader2 } from "lucide-react";
+import { apiRequest } from "@/lib/queryClient";
 
 interface ToolbarProps {
   text: string;
@@ -18,6 +22,8 @@ interface ToolbarProps {
   setCategory: (val: string) => void;
   search: string;
   setSearch: (val: string) => void;
+  aiStyles: React.CSSProperties;
+  setAiStyles: (styles: React.CSSProperties) => void;
 }
 
 export function Toolbar({
@@ -28,70 +34,168 @@ export function Toolbar({
   category,
   setCategory,
   search,
-  setSearch
+  setSearch,
+  aiStyles,
+  setAiStyles
 }: ToolbarProps) {
+  const [aiPrompt, setAiPrompt] = useState("");
+  const [isGenerating, setIsGenerating] = useState(false);
+
+  const generateAiEffect = async () => {
+    if (!aiPrompt.trim()) return;
+    
+    setIsGenerating(true);
+    try {
+      const response = await apiRequest("POST", "/api/ai/text-effect", { prompt: aiPrompt });
+      const data = await response.json();
+      if (data.styles) {
+        setAiStyles(data.styles);
+      }
+    } catch (error) {
+      console.error("Failed to generate AI effect:", error);
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const clearAiEffect = () => {
+    setAiStyles({});
+    setAiPrompt("");
+  };
+
   return (
     <div className="sticky top-0 z-50 w-full backdrop-blur-xl bg-background/80 border-b border-border/60 shadow-sm transition-all duration-300">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 space-y-4 md:space-y-0 md:flex md:items-center md:gap-6">
-        
-        {/* Text Input */}
-        <div className="flex-1 min-w-[300px] relative group">
-          <Type className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
-          <Input 
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            placeholder="Type something to preview..."
-            className="pl-9 h-11 bg-muted/40 border-border/60 focus:bg-background transition-all"
-          />
-        </div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <Tabs defaultValue="basic" className="w-full">
+          <TabsList className="mb-4">
+            <TabsTrigger value="basic" data-testid="tab-basic">
+              <Type className="w-4 h-4 mr-2" />
+              Basic
+            </TabsTrigger>
+            <TabsTrigger value="ai" data-testid="tab-ai">
+              <Sparkles className="w-4 h-4 mr-2" />
+              AI Effects
+            </TabsTrigger>
+          </TabsList>
 
-        {/* Controls Container */}
-        <div className="flex flex-col sm:flex-row gap-4 items-center">
-          
-          {/* Font Size Slider */}
-          <div className="flex items-center gap-3 min-w-[180px] bg-muted/30 px-3 py-2 rounded-lg border border-border/40">
-            <ALargeSmall className="w-4 h-4 text-muted-foreground" />
-            <Slider
-              value={[fontSize]}
-              onValueChange={(vals) => setFontSize(vals[0])}
-              min={12}
-              max={120}
-              step={1}
-              className="w-full"
-            />
-            <span className="text-xs font-mono w-8 text-right text-muted-foreground">
-              {fontSize}px
-            </span>
-          </div>
+          <TabsContent value="basic" className="space-y-4 md:space-y-0 md:flex md:items-center md:gap-6">
+            {/* Text Input */}
+            <div className="flex-1 min-w-[300px] relative group">
+              <Type className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
+              <Input 
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+                placeholder="Type something to preview..."
+                className="pl-9 h-11 bg-muted/40 border-border/60 focus:bg-background transition-all"
+                data-testid="input-preview-text"
+              />
+            </div>
 
-          {/* Category Filter */}
-          <Select value={category} onValueChange={setCategory}>
-            <SelectTrigger className="w-full sm:w-[150px] h-11 bg-muted/30 border-border/40">
-              <SelectValue placeholder="Category" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Categories</SelectItem>
-              <SelectItem value="Sans-serif">Sans Serif</SelectItem>
-              <SelectItem value="Serif">Serif</SelectItem>
-              <SelectItem value="Monospace">Monospace</SelectItem>
-              <SelectItem value="Display">Display</SelectItem>
-              <SelectItem value="Cursive">Cursive</SelectItem>
-              <SelectItem value="Spooky">Spooky</SelectItem>
-            </SelectContent>
-          </Select>
-          
-          {/* Font Name Search */}
-           <div className="relative w-full sm:w-[200px]">
-             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-             <Input 
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search fonts..."
-              className="pl-9 h-11 bg-muted/30 border-border/40 focus:bg-background"
-             />
-           </div>
-        </div>
+            {/* Controls Container */}
+            <div className="flex flex-col sm:flex-row gap-4 items-center">
+              
+              {/* Font Size Slider */}
+              <div className="flex items-center gap-3 min-w-[180px] bg-muted/30 px-3 py-2 rounded-lg border border-border/40">
+                <ALargeSmall className="w-4 h-4 text-muted-foreground" />
+                <Slider
+                  value={[fontSize]}
+                  onValueChange={(vals) => setFontSize(vals[0])}
+                  min={12}
+                  max={120}
+                  step={1}
+                  className="w-full"
+                  data-testid="slider-font-size"
+                />
+                <span className="text-xs font-mono w-8 text-right text-muted-foreground">
+                  {fontSize}px
+                </span>
+              </div>
 
+              {/* Category Filter */}
+              <Select value={category} onValueChange={setCategory}>
+                <SelectTrigger className="w-full sm:w-[150px] h-11 bg-muted/30 border-border/40" data-testid="select-category">
+                  <SelectValue placeholder="Category" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Categories</SelectItem>
+                  <SelectItem value="Sans-serif">Sans Serif</SelectItem>
+                  <SelectItem value="Serif">Serif</SelectItem>
+                  <SelectItem value="Monospace">Monospace</SelectItem>
+                  <SelectItem value="Display">Display</SelectItem>
+                  <SelectItem value="Cursive">Cursive</SelectItem>
+                  <SelectItem value="Spooky">Spooky</SelectItem>
+                </SelectContent>
+              </Select>
+              
+              {/* Font Name Search */}
+               <div className="relative w-full sm:w-[200px]">
+                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                 <Input 
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Search fonts..."
+                  className="pl-9 h-11 bg-muted/30 border-border/40 focus:bg-background"
+                  data-testid="input-search-fonts"
+                 />
+               </div>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="ai" className="space-y-4">
+            <div className="flex flex-col md:flex-row gap-4 items-start md:items-center">
+              <div className="flex-1 w-full relative group">
+                <Sparkles className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
+                <Input 
+                  value={aiPrompt}
+                  onChange={(e) => setAiPrompt(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && generateAiEffect()}
+                  placeholder="Describe a text effect... (e.g., 'balloon looking text', 'make it look like brick', 'neon glow')"
+                  className="pl-9 h-11 bg-muted/40 border-border/60 focus:bg-background transition-all"
+                  data-testid="input-ai-prompt"
+                />
+              </div>
+              <div className="flex gap-2">
+                <Button 
+                  onClick={generateAiEffect}
+                  disabled={isGenerating || !aiPrompt.trim()}
+                  data-testid="button-generate-ai"
+                >
+                  {isGenerating ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Generating...
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="w-4 h-4 mr-2" />
+                      Generate Effect
+                    </>
+                  )}
+                </Button>
+                {Object.keys(aiStyles).length > 0 && (
+                  <Button 
+                    variant="outline" 
+                    onClick={clearAiEffect}
+                    data-testid="button-clear-ai"
+                  >
+                    Clear Effect
+                  </Button>
+                )}
+              </div>
+            </div>
+            {Object.keys(aiStyles).length > 0 && (
+              <div className="p-3 bg-muted/30 rounded-lg border border-border/40">
+                <p className="text-sm text-muted-foreground mb-2">Active AI Effect:</p>
+                <div 
+                  className="text-2xl font-bold"
+                  style={aiStyles}
+                >
+                  Preview Text
+                </div>
+              </div>
+            )}
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );

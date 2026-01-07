@@ -118,6 +118,7 @@ interface FontCardProps {
   index?: number;
   color: string;
   onColorChange: (color: string) => void;
+  aiStyles?: React.CSSProperties;
 }
 
 const presetColors = [
@@ -189,7 +190,7 @@ const textAnimations = {
   },
 };
 
-export function FontCard({ font, previewText, fontSize, index = 0, color, onColorChange }: FontCardProps) {
+export function FontCard({ font, previewText, fontSize, index = 0, color, onColorChange, aiStyles = {} }: FontCardProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [currentAnim, setCurrentAnim] = useState<keyof typeof textAnimations>("bounce");
   const [isBold, setIsBold] = useState(false);
@@ -296,10 +297,11 @@ export function FontCard({ font, previewText, fontSize, index = 0, color, onColo
           style={{
             fontFamily: font.family,
             fontSize: `${fontSize}px`,
-            color: color,
+            color: Object.keys(aiStyles).length > 0 ? undefined : color,
             fontWeight: isBold ? "bold" : "normal",
             fontStyle: isItalic ? "italic" : "normal",
             textDecoration: isUnderline ? "underline" : "none",
+            ...aiStyles,
           }}
         >
           {previewText || "The quick brown fox jumps over the lazy dog."}
