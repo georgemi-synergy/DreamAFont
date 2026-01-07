@@ -44,7 +44,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-end md:items-center gap-4">
           <div>
             <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-              TypeScale
+              Dream a Font
             </h1>
             <p className="text-muted-foreground mt-2 text-lg">
               Explore and preview Google Fonts in real-time.
