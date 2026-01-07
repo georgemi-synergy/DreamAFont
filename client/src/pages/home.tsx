@@ -9,7 +9,7 @@ import { motion, AnimatePresence } from "framer-motion";
 export default function Home() {
   const { data: fonts, isLoading, error } = useFonts();
   
-  const [text, setText] = useState("The quick brown fox jumps over the lazy dog.");
+  const [text, setText] = useState("Dream of a font and it will be here.");
   const [fontSize, setFontSize] = useState(32);
   const [category, setCategory] = useState("all");
   const [search, setSearch] = useState("");
