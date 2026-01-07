@@ -3,7 +3,7 @@ import { useFonts } from "@/hooks/use-fonts";
 import { FontCard } from "@/components/font-card";
 import { Toolbar } from "@/components/toolbar";
 import { LoadingGrid } from "@/components/loading-skeleton";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, Search } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function Home() {
@@ -74,8 +74,8 @@ export default function Home() {
         ) : (
           <div className="min-h-[50vh]">
              {!filteredFonts?.length ? (
-               <div className="flex flex-col items-center justify-center py-20 text-center opacity-60">
-                 <div className="text-6xl mb-4">🔍</div>
+               <div className="flex flex-col items-center justify-center py-20 text-center text-muted-foreground">
+                 <Search className="w-16 h-16 mb-4 opacity-40" />
                  <h3 className="text-xl font-semibold">No fonts found</h3>
                  <p>Try adjusting your search or category filters.</p>
                </div>
