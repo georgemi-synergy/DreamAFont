@@ -6,6 +6,36 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Palette, Play, Bold, Italic, Underline } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
+function FloralCorner({ className }: { className?: string }) {
+  return (
+    <svg 
+      viewBox="0 0 80 80" 
+      className={cn("absolute w-16 h-16 pointer-events-none", className)}
+      fill="currentColor"
+    >
+      <g>
+        <path d="M 10 5 Q 15 10 10 15 Q 5 10 10 5" />
+        <path d="M 20 8 Q 25 13 20 18 Q 15 13 20 8" />
+        <path d="M 30 5 Q 35 10 30 15 Q 25 10 30 5" />
+        <circle cx="10" cy="10" r="2" />
+        <circle cx="20" cy="13" r="2.5" />
+        <circle cx="30" cy="10" r="2" />
+        <path d="M 5 20 Q 10 25 5 30 Q 0 25 5 20" />
+        <path d="M 8 30 Q 13 35 8 40 Q 3 35 8 30" />
+        <path d="M 5 40 Q 10 45 5 50 Q 0 45 5 40" />
+        <circle cx="5" cy="25" r="2" />
+        <circle cx="8" cy="35" r="2.5" />
+        <circle cx="5" cy="45" r="2" />
+        <path d="M 15 15 Q 20 20 15 25 Q 10 20 15 15" />
+        <circle cx="15" cy="20" r="3" />
+        <path d="M 0 0 L 50 0 Q 45 5 40 10 L 10 10 Q 5 15 0 20 Z" opacity="0.15" />
+        <path d="M 25 20 C 30 25 35 30 40 25 C 45 20 50 15 45 10" strokeWidth="1" fill="none" stroke="currentColor" opacity="0.4" />
+        <path d="M 20 25 C 25 30 30 35 35 30" strokeWidth="0.8" fill="none" stroke="currentColor" opacity="0.3" />
+      </g>
+    </svg>
+  );
+}
+
 interface FontCardProps {
   font: Font;
   previewText: string;
@@ -129,12 +159,17 @@ export function FontCard({ font, previewText, fontSize, index = 0, color, onColo
         "group relative flex flex-col h-full bg-card rounded-md",
         "shadow-sm cursor-pointer",
         "transition-shadow duration-300 ease-out overflow-visible",
-        "border-4 border-double border-primary/30",
-        "before:absolute before:inset-1 before:border before:border-primary/20 before:rounded before:pointer-events-none"
+        "border border-border/40"
       )}
       style={{ perspective: 1000 }}
       data-testid={`card-font-${font.id}`}
     >
+      {/* Intricate floral corner decorations */}
+      <FloralCorner className="top-0 left-0 text-foreground/80" />
+      <FloralCorner className="top-0 right-0 text-foreground/80 -scale-x-100" />
+      <FloralCorner className="bottom-0 left-0 text-foreground/80 -scale-y-100" />
+      <FloralCorner className="bottom-0 right-0 text-foreground/80 -scale-x-100 -scale-y-100" />
+
       {/* Animated glow effect on hover */}
       <motion.div
         className="absolute inset-0 rounded-md opacity-0 pointer-events-none"
