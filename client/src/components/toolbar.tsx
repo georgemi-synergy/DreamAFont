@@ -89,12 +89,12 @@ export function Toolbar({
           <TabsContent value="basic" className="space-y-4 md:space-y-0 md:flex md:items-center md:gap-6">
             {/* Text Input */}
             <div className="flex-1 min-w-[300px] relative group">
-              <Type className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
+              <Type className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-pink-400 group-focus-within:text-pink-500 transition-colors" />
               <Input 
                 value={text}
                 onChange={(e) => setText(e.target.value)}
                 placeholder="Type something to preview..."
-                className="pl-9 h-11 bg-muted/40 border-border/60 focus:bg-background transition-all"
+                className="pl-9 h-11 bg-pink-50 dark:bg-pink-900/20 border-pink-200 dark:border-pink-800/40 focus:bg-pink-50 dark:focus:bg-pink-900/30 transition-all"
                 data-testid="input-preview-text"
               />
             </div>
@@ -103,8 +103,8 @@ export function Toolbar({
             <div className="flex flex-col sm:flex-row gap-4 items-center">
               
               {/* Font Size Slider */}
-              <div className="flex items-center gap-3 min-w-[180px] bg-muted/30 px-3 py-2 rounded-lg border border-border/40">
-                <ALargeSmall className="w-4 h-4 text-muted-foreground" />
+              <div className="flex items-center gap-3 min-w-[180px] bg-pink-50 dark:bg-pink-900/20 px-3 py-2 rounded-lg border border-pink-200 dark:border-pink-800/40">
+                <ALargeSmall className="w-4 h-4 text-pink-400" />
                 <Slider
                   value={[fontSize]}
                   onValueChange={(vals) => setFontSize(vals[0])}
@@ -114,17 +114,17 @@ export function Toolbar({
                   className="w-full"
                   data-testid="slider-font-size"
                 />
-                <span className="text-xs font-mono w-8 text-right text-muted-foreground">
+                <span className="text-xs font-mono w-8 text-right text-pink-500 dark:text-pink-300">
                   {fontSize}px
                 </span>
               </div>
 
               {/* Category Filter */}
               <Select value={category} onValueChange={setCategory}>
-                <SelectTrigger className="w-full sm:w-[150px] h-11 bg-muted/30 border-border/40" data-testid="select-category">
+                <SelectTrigger className="w-full sm:w-[150px] h-11 bg-pink-50 dark:bg-pink-900/20 border-pink-200 dark:border-pink-800/40" data-testid="select-category">
                   <SelectValue placeholder="Category" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-pink-50 dark:bg-pink-950">
                   <SelectItem value="all">All Categories</SelectItem>
                   <SelectItem value="Sans-serif">Sans Serif</SelectItem>
                   <SelectItem value="Serif">Serif</SelectItem>
@@ -137,12 +137,12 @@ export function Toolbar({
               
               {/* Font Name Search */}
                <div className="relative w-full sm:w-[200px]">
-                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-pink-400" />
                  <Input 
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder="Search fonts..."
-                  className="pl-9 h-11 bg-muted/30 border-border/40 focus:bg-background"
+                  className="pl-9 h-11 bg-pink-50 dark:bg-pink-900/20 border-pink-200 dark:border-pink-800/40 focus:bg-pink-50 dark:focus:bg-pink-900/30"
                   data-testid="input-search-fonts"
                  />
                </div>
