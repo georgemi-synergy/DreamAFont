@@ -42,14 +42,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
       {/* Header / Brand */}
-      <header 
-        className="pt-8 pb-6 px-4 sm:px-6 lg:px-8 border-b border-border/40"
-        style={{
-          backgroundImage: `url(${pinkFlowersWallpaper})`,
-          backgroundRepeat: 'repeat',
-          backgroundSize: '200px 200px',
-        }}
-      >
+      <header className="bg-background pt-8 pb-6 px-4 sm:px-6 lg:px-8 border-b border-border/40">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-end md:items-center gap-4">
           <div>
             <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
@@ -80,7 +73,15 @@ export default function Home() {
       />
 
       {/* Main Grid */}
-      <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main 
+        className="flex-1 w-full px-4 sm:px-6 lg:px-8 py-8"
+        style={{
+          backgroundImage: `url(${pinkFlowersWallpaper})`,
+          backgroundRepeat: 'repeat',
+          backgroundSize: '200px 200px',
+        }}
+      >
+        <div className="max-w-7xl mx-auto">
         {isLoading ? (
           <LoadingGrid />
         ) : (
@@ -114,6 +115,7 @@ export default function Home() {
              )}
           </div>
         )}
+        </div>
       </main>
 
       <footer className="border-t border-border/40 py-8 text-center text-sm text-muted-foreground bg-muted/10">
