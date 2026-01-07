@@ -2,6 +2,9 @@ import { useState } from "react";
 import type { Font } from "@shared/schema";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Palette } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface FontCardProps {
   font: Font;
@@ -9,19 +12,15 @@ interface FontCardProps {
   fontSize: number;
 }
 
-const colorPalette = [
-  { name: "Default", value: "currentColor", bg: "bg-foreground" },
-  { name: "Slate", value: "#475569", bg: "bg-slate-600" },
-  { name: "Rose", value: "#e11d48", bg: "bg-rose-600" },
-  { name: "Orange", value: "#ea580c", bg: "bg-orange-600" },
-  { name: "Emerald", value: "#059669", bg: "bg-emerald-600" },
-  { name: "Blue", value: "#2563eb", bg: "bg-blue-600" },
-  { name: "Violet", value: "#7c3aed", bg: "bg-violet-600" },
-  { name: "Pink", value: "#db2777", bg: "bg-pink-600" },
+const presetColors = [
+  "#000000", "#475569", "#64748b", "#94a3b8",
+  "#ef4444", "#f97316", "#eab308", "#22c55e",
+  "#14b8a6", "#06b6d4", "#3b82f6", "#6366f1",
+  "#8b5cf6", "#a855f7", "#d946ef", "#ec4899",
 ];
 
 export function FontCard({ font, previewText, fontSize }: FontCardProps) {
-  const [selectedColor, setSelectedColor] = useState(colorPalette[0]);
+  const [selectedColor, setSelectedColor] = useState("#000000");
 
   const getCategoryBadgeStyle = (category: string) => {
     switch (category.toLowerCase()) {
@@ -72,32 +71,77 @@ export function FontCard({ font, previewText, fontSize }: FontCardProps) {
           style={{
             fontFamily: font.family,
             fontSize: `${fontSize}px`,
-            color: selectedColor.value === "currentColor" ? undefined : selectedColor.value,
+            color: selectedColor,
           }}
         >
           {previewText || "The quick brown fox jumps over the lazy dog."}
         </div>
       </div>
 
-      {/* Color Palette */}
+      {/* Color Picker */}
       <div className="px-4 py-3 border-t border-border/40 bg-muted/10">
-        <div className="flex items-center gap-2 flex-wrap">
-          <span className="text-xs text-muted-foreground mr-1">Colors:</span>
-          {colorPalette.map((color) => (
-            <button
-              key={color.name}
-              onClick={() => setSelectedColor(color)}
-              className={cn(
-                "w-5 h-5 rounded-full transition-all duration-200 border-2",
-                color.bg,
-                selectedColor.name === color.name
-                  ? "ring-2 ring-offset-2 ring-primary border-white dark:border-gray-900"
-                  : "border-transparent hover:scale-110"
-              )}
-              title={color.name}
-              data-testid={`button-color-${color.name.toLowerCase()}-${font.id}`}
-            />
-          ))}
+        <div className="flex items-center gap-3">
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button 
+                variant="outline" 
+                size="sm"
+                className="gap-2"
+                data-testid={`button-color-picker-${font.id}`}
+              >
+                <div 
+                  className="w-4 h-4 rounded-full border border-border"
+                  style={{ backgroundColor: selectedColor }}
+                />
+                <Palette className="w-4 h-4" />
+                <span className="text-xs">Color</span>
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-64 p-3" align="start">
+              <div className="space-y-3">
+                {/* Color Wheel Input */}
+                <div className="flex items-center gap-3">
+                  <input
+                    type="color"
+                    value={selectedColor}
+                    onChange={(e) => setSelectedColor(e.target.value)}
+                    className="w-12 h-12 rounded-md cursor-pointer border-0 p-0 bg-transparent"
+                    data-testid={`input-color-wheel-${font.id}`}
+                  />
+                  <div className="flex-1">
+                    <p className="text-sm font-medium">Pick a color</p>
+                    <p className="text-xs text-muted-foreground uppercase">{selectedColor}</p>
+                  </div>
+                </div>
+
+                {/* Preset Colors Grid */}
+                <div>
+                  <p className="text-xs text-muted-foreground mb-2">Presets</p>
+                  <div className="grid grid-cols-8 gap-1">
+                    {presetColors.map((color) => (
+                      <button
+                        key={color}
+                        onClick={() => setSelectedColor(color)}
+                        className={cn(
+                          "w-6 h-6 rounded-md transition-all duration-150 border",
+                          selectedColor === color
+                            ? "ring-2 ring-offset-1 ring-primary border-white dark:border-gray-800"
+                            : "border-transparent hover:scale-110"
+                        )}
+                        style={{ backgroundColor: color }}
+                        title={color}
+                        data-testid={`button-preset-${color.replace('#', '')}-${font.id}`}
+                      />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </PopoverContent>
+          </Popover>
+
+          <span className="text-xs text-muted-foreground">
+            Click to open color wheel
+          </span>
         </div>
       </div>
     </motion.div>
