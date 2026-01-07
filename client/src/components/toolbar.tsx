@@ -67,12 +67,20 @@ export function Toolbar({
     <div className="sticky top-0 z-50 w-full backdrop-blur-xl bg-background/80 border-b border-border/60 shadow-sm transition-all duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <Tabs defaultValue="basic" className="w-full">
-          <TabsList className="mb-4">
-            <TabsTrigger value="basic" data-testid="tab-basic">
+          <TabsList className="mb-4 bg-green-100 dark:bg-green-900/30">
+            <TabsTrigger 
+              value="basic" 
+              data-testid="tab-basic"
+              className="data-[state=active]:bg-green-200 data-[state=active]:text-green-800 dark:data-[state=active]:bg-green-800 dark:data-[state=active]:text-green-100"
+            >
               <Type className="w-4 h-4 mr-2" />
               Basic
             </TabsTrigger>
-            <TabsTrigger value="ai" data-testid="tab-ai">
+            <TabsTrigger 
+              value="ai" 
+              data-testid="tab-ai"
+              className="data-[state=active]:bg-green-200 data-[state=active]:text-green-800 dark:data-[state=active]:bg-green-800 dark:data-[state=active]:text-green-100"
+            >
               <Sparkles className="w-4 h-4 mr-2" />
               AI Effects
             </TabsTrigger>
