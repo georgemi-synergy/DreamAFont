@@ -7,6 +7,7 @@ import { AlertCircle, Search, Volume2, VolumeX, Moon, Sun, Sparkles, Star } from
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import pinkFlowersWallpaper from "@assets/generated_images/pink_flowers_wallpaper_pattern.png";
+import starsAndMoonsWallpaper from "@assets/generated_images/stars_and_moons_night_pattern.png";
 import dreamyMusic from "@assets/dreamy-ambient.mp3";
 import confetti from "canvas-confetti";
 import { playSuccessSound, playWhooshSound, playSparkleSound, playClickSound, playMagicSound } from "@/lib/sounds";
@@ -258,9 +259,9 @@ export default function Home() {
 
       {/* Main Grid */}
       <main 
-        className="flex-1 w-full px-4 sm:px-6 lg:px-8 py-8"
+        className="flex-1 w-full px-4 sm:px-6 lg:px-8 py-8 transition-all duration-500"
         style={{
-          backgroundImage: `url(${pinkFlowersWallpaper})`,
+          backgroundImage: `url(${isDark ? starsAndMoonsWallpaper : pinkFlowersWallpaper})`,
           backgroundRepeat: 'repeat',
           backgroundSize: '200px 200px',
         }}
