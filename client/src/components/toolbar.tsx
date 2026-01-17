@@ -353,13 +353,13 @@ export function Toolbar({
                 <Button
                   key={preset.id}
                   variant="outline"
-                  className="h-auto py-3 px-4 flex flex-col items-start gap-1 hover-elevate"
+                  className="h-auto py-2 px-3 flex flex-col items-start gap-0.5 hover-elevate whitespace-normal text-left"
                   style={{ borderLeftColor: preset.color, borderLeftWidth: 4 }}
                   onClick={() => onApplyPreset(preset)}
                   data-testid={`button-preset-${preset.id}`}
                 >
-                  <span className="font-semibold text-sm">{preset.name}</span>
-                  <span className="text-xs text-muted-foreground line-clamp-1">{preset.description}</span>
+                  <span className="font-semibold text-xs leading-tight">{preset.name}</span>
+                  <span className="text-[10px] text-muted-foreground leading-tight line-clamp-2">{preset.description}</span>
                 </Button>
               ))}
             </div>
