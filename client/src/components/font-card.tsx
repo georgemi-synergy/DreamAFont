@@ -162,10 +162,11 @@ const cardVariants = {
   hover: {
     y: -10,
     scale: 1.03,
+    rotate: [0, -1, 1, -0.5, 0.5, 0],
     transition: {
-      type: "spring",
-      stiffness: 600,
-      damping: 15,
+      y: { type: "spring", stiffness: 600, damping: 15 },
+      scale: { type: "spring", stiffness: 600, damping: 15 },
+      rotate: { duration: 0.4, ease: "easeInOut" },
     },
   },
   tap: {

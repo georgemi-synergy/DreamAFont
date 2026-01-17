@@ -9,6 +9,70 @@ function getAudioContext(): AudioContext {
   return audioContext;
 }
 
+// Celebration fanfare
+export function playFanfareSound() {
+  try {
+    const ctx = getAudioContext();
+    const notes = [392, 523.25, 659.25, 783.99, 1046.5]; // G4, C5, E5, G5, C6
+    
+    notes.forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.type = 'triangle';
+      const startTime = ctx.currentTime + i * 0.12;
+      osc.frequency.setValueAtTime(freq, startTime);
+      gain.gain.setValueAtTime(0, startTime);
+      gain.gain.linearRampToValueAtTime(0.12, startTime + 0.05);
+      gain.gain.exponentialRampToValueAtTime(0.01, startTime + 0.3);
+      osc.start(startTime);
+      osc.stop(startTime + 0.3);
+    });
+  } catch (e) {}
+}
+
+// Rainbow sparkle cascade
+export function playRainbowSound() {
+  try {
+    const ctx = getAudioContext();
+    const notes = [261.63, 293.66, 329.63, 349.23, 392, 440, 493.88, 523.25]; // C major scale
+    
+    notes.forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.type = 'sine';
+      const startTime = ctx.currentTime + i * 0.08;
+      osc.frequency.setValueAtTime(freq, startTime);
+      gain.gain.setValueAtTime(0, startTime);
+      gain.gain.linearRampToValueAtTime(0.08, startTime + 0.03);
+      gain.gain.exponentialRampToValueAtTime(0.01, startTime + 0.2);
+      osc.start(startTime);
+      osc.stop(startTime + 0.2);
+    });
+  } catch (e) {}
+}
+
+// Bubble pop sound
+export function playBubbleSound() {
+  try {
+    const ctx = getAudioContext();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(800, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(400, ctx.currentTime + 0.08);
+    gain.gain.setValueAtTime(0.1, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 0.08);
+  } catch (e) {}
+}
+
 export function playClickSound() {
   try {
     const ctx = getAudioContext();
