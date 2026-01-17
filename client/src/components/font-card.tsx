@@ -1,11 +1,12 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import type { Font } from "@shared/schema";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence, useAnimation } from "framer-motion";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Palette, Play, Bold, Italic, Underline, Copy, Check, Heart } from "lucide-react";
+import { Palette, Play, Bold, Italic, Underline, Copy, Check, Heart, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import html2canvas from "html2canvas";
 
 function FloralCorner({ className }: { className?: string }) {
   return (
@@ -224,7 +225,9 @@ export function FontCard({ font, previewText, fontSize, index = 0, color, onColo
   const [isItalic, setIsItalic] = useState(false);
   const [isUnderline, setIsUnderline] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
   const textControls = useAnimation();
+  const previewRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
   const copyFontName = async () => {
@@ -242,6 +245,36 @@ export function FontCard({ font, previewText, fontSize, index = 0, color, onColo
         description: "Please try again",
         variant: "destructive",
       });
+    }
+  };
+
+  const downloadPreview = async () => {
+    if (!previewRef.current || isDownloading) return;
+    
+    setIsDownloading(true);
+    try {
+      const canvas = await html2canvas(previewRef.current, {
+        backgroundColor: "#ffffff",
+        scale: 2,
+      });
+      
+      const link = document.createElement("a");
+      link.download = `${font.family.replace(/\s+/g, "-")}-preview.png`;
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+      
+      toast({
+        title: "Downloaded!",
+        description: `Preview saved as ${link.download}`,
+      });
+    } catch (err) {
+      toast({
+        title: "Download failed",
+        description: "Please try again",
+        variant: "destructive",
+      });
+    } finally {
+      setIsDownloading(false);
     }
   };
 
@@ -340,6 +373,16 @@ export function FontCard({ font, previewText, fontSize, index = 0, color, onColo
           >
             <Heart className={cn("w-3.5 h-3.5 transition-colors", isFavorite ? "fill-red-500 text-red-500" : "")} />
           </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={downloadPreview}
+            disabled={isDownloading}
+            className="h-7 w-7 shrink-0"
+            data-testid={`button-download-${font.id}`}
+          >
+            <Download className={cn("w-3.5 h-3.5", isDownloading && "animate-pulse")} />
+          </Button>
         </div>
         <motion.span
           initial={{ opacity: 0, scale: 0 }}
@@ -360,7 +403,7 @@ export function FontCard({ font, previewText, fontSize, index = 0, color, onColo
       </motion.div>
 
       {/* Preview Area */}
-      <div className="flex-1 p-6 flex flex-col justify-center min-h-[180px] overflow-hidden bg-white/50 dark:bg-black/20 relative z-10">
+      <div ref={previewRef} className="flex-1 p-6 flex flex-col justify-center min-h-[180px] overflow-hidden bg-white/50 dark:bg-black/20 relative z-10">
         <motion.div
           className="break-words leading-tight origin-center"
           initial={{ opacity: 1 }}
