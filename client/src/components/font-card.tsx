@@ -123,6 +123,7 @@ interface FontCardProps {
   aiStyles?: React.CSSProperties;
   isFavorite?: boolean;
   onToggleFavorite?: (fontId: number) => void;
+  isHighlighted?: boolean;
 }
 
 const presetColors = [
@@ -218,7 +219,7 @@ const textAnimations = {
   },
 };
 
-export function FontCard({ font, previewText, fontSize, index = 0, color, onColorChange, aiStyles = {}, isFavorite = false, onToggleFavorite }: FontCardProps) {
+export function FontCard({ font, previewText, fontSize, index = 0, color, onColorChange, aiStyles = {}, isFavorite = false, onToggleFavorite, isHighlighted = false }: FontCardProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [currentAnim, setCurrentAnim] = useState<keyof typeof textAnimations>("bounce");
   const [isBold, setIsBold] = useState(false);
@@ -315,7 +316,8 @@ export function FontCard({ font, previewText, fontSize, index = 0, color, onColo
         "group relative flex flex-col h-full bg-card rounded-md",
         "shadow-sm cursor-pointer",
         "transition-shadow duration-300 ease-out overflow-visible",
-        "border border-border/40"
+        "border border-border/40",
+        isHighlighted && "ring-4 ring-purple-400 ring-offset-2 shadow-lg shadow-purple-300/50 dark:ring-purple-500 dark:shadow-purple-500/30"
       )}
       style={{ perspective: 1000 }}
       data-testid={`card-font-${font.id}`}

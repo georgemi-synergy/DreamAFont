@@ -3,11 +3,12 @@ import { useFonts } from "@/hooks/use-fonts";
 import { FontCard } from "@/components/font-card";
 import { Toolbar, ProjectPreset } from "@/components/toolbar";
 import { LoadingGrid } from "@/components/loading-skeleton";
-import { AlertCircle, Search, Volume2, VolumeX, Moon, Sun } from "lucide-react";
+import { AlertCircle, Search, Volume2, VolumeX, Moon, Sun, Sparkles } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import pinkFlowersWallpaper from "@assets/generated_images/pink_flowers_wallpaper_pattern.png";
 import dreamyMusic from "@assets/dreamy-ambient.mp3";
+import confetti from "canvas-confetti";
 
 export default function Home() {
   const { data: fonts, isLoading, error } = useFonts();
@@ -28,6 +29,7 @@ export default function Home() {
     const saved = localStorage.getItem('dreamafont-theme');
     return saved === 'dark';
   });
+  const [highlightedFontId, setHighlightedFontId] = useState<number | null>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
 
   useEffect(() => {
@@ -44,11 +46,48 @@ export default function Home() {
   }, [isDark]);
 
   const toggleFavorite = (fontId: number) => {
+    const isAdding = !favorites.includes(fontId);
     setFavorites(prev => 
       prev.includes(fontId) 
         ? prev.filter(id => id !== fontId)
         : [...prev, fontId]
     );
+    
+    if (isAdding) {
+      confetti({
+        particleCount: 50,
+        spread: 60,
+        origin: { y: 0.7 },
+        colors: ['#ff69b4', '#ff1493', '#db7093', '#ffb6c1', '#ffc0cb']
+      });
+    }
+  };
+
+  const surpriseMe = () => {
+    if (!filteredFonts?.length) return;
+    
+    const randomIndex = Math.floor(Math.random() * filteredFonts.length);
+    const randomFont = filteredFonts[randomIndex];
+    
+    confetti({
+      particleCount: 100,
+      spread: 70,
+      origin: { y: 0.6 },
+      colors: ['#a855f7', '#ec4899', '#f97316', '#22c55e', '#3b82f6']
+    });
+    
+    setHighlightedFontId(randomFont.id);
+    
+    setTimeout(() => {
+      const cardElement = document.querySelector(`[data-testid="card-font-${randomFont.id}"]`);
+      if (cardElement) {
+        cardElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }, 100);
+    
+    setTimeout(() => {
+      setHighlightedFontId(null);
+    }, 3000);
   };
 
   const toggleMusic = () => {
@@ -119,6 +158,16 @@ export default function Home() {
             </p>
           </div>
           <div className="flex items-center gap-3">
+            <Button
+              variant="outline"
+              onClick={surpriseMe}
+              disabled={isLoading || !filteredFonts?.length}
+              className="bg-gradient-to-r from-purple-100 to-pink-100 dark:from-purple-900/30 dark:to-pink-900/30 border-purple-200 dark:border-purple-800/40 hover:from-purple-200 hover:to-pink-200 dark:hover:from-purple-900/50 dark:hover:to-pink-900/50"
+              data-testid="button-surprise-me"
+            >
+              <Sparkles className="w-4 h-4 mr-2" />
+              Surprise Me!
+            </Button>
             <Button
               variant="outline"
               size="icon"
@@ -200,6 +249,7 @@ export default function Home() {
                        aiStyles={aiStyles}
                        isFavorite={favorites.includes(font.id)}
                        onToggleFavorite={toggleFavorite}
+                       isHighlighted={highlightedFontId === font.id}
                      />
                    ))}
                  </AnimatePresence>
