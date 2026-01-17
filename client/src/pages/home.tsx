@@ -62,12 +62,21 @@ export default function Home() {
     }
   };
 
-  const handleApplyPreset = (preset: ProjectPreset) => {
-    setCategory(preset.category);
-    setSearch(preset.searchTerm);
-    setFontSize(preset.fontSize);
-    setGlobalColor(preset.color);
-    setShowFavorites(false);
+  const handleApplyPreset = (preset: ProjectPreset | null) => {
+    if (preset === null) {
+      // Reset to defaults
+      setCategory("all");
+      setSearch("");
+      setFontSize(32);
+      setGlobalColor("#000000");
+      setShowFavorites(false);
+    } else {
+      setCategory(preset.category);
+      setSearch(preset.searchTerm);
+      setFontSize(preset.fontSize);
+      setGlobalColor(preset.color);
+      setShowFavorites(false);
+    }
   };
 
   const filteredFonts = fonts?.filter(font => {

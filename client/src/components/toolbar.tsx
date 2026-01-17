@@ -113,7 +113,7 @@ interface ToolbarProps {
   showFavorites: boolean;
   setShowFavorites: (val: boolean) => void;
   favoritesCount: number;
-  onApplyPreset: (preset: ProjectPreset) => void;
+  onApplyPreset: (preset: ProjectPreset | null) => void;
 }
 
 const fontSizePresets = [
@@ -347,7 +347,18 @@ export function Toolbar({
           </TabsContent>
 
           <TabsContent value="presets" className="space-y-4">
-            <p className="text-sm text-muted-foreground">Choose a project type to auto-fill fonts, colors, and sizes:</p>
+            <div className="flex items-center justify-between">
+              <p className="text-sm text-muted-foreground">Choose a project type to auto-fill fonts, colors, and sizes:</p>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => onApplyPreset(null)}
+                className="text-xs"
+                data-testid="button-reset-preset"
+              >
+                Reset to Default
+              </Button>
+            </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               {projectPresets.map((preset) => (
                 <Button
