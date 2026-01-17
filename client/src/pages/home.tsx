@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useFonts } from "@/hooks/use-fonts";
 import { FontCard } from "@/components/font-card";
-import { Toolbar } from "@/components/toolbar";
+import { Toolbar, ProjectPreset } from "@/components/toolbar";
 import { LoadingGrid } from "@/components/loading-skeleton";
 import { AlertCircle, Search, Volume2, VolumeX, Moon, Sun } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -60,6 +60,14 @@ export default function Home() {
       }
       setIsPlaying(!isPlaying);
     }
+  };
+
+  const handleApplyPreset = (preset: ProjectPreset) => {
+    setCategory(preset.category);
+    setSearch(preset.searchTerm);
+    setFontSize(preset.fontSize);
+    setGlobalColor(preset.color);
+    setShowFavorites(false);
   };
 
   const filteredFonts = fonts?.filter(font => {
@@ -142,6 +150,7 @@ export default function Home() {
         showFavorites={showFavorites}
         setShowFavorites={setShowFavorites}
         favoritesCount={favorites.length}
+        onApplyPreset={handleApplyPreset}
       />
 
       {/* Main Grid */}

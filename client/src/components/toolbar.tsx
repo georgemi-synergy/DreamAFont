@@ -10,9 +10,94 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Type, ALargeSmall, Search, Sparkles, Loader2, Heart } from "lucide-react";
+import { Type, ALargeSmall, Search, Sparkles, Loader2, Heart, Palette } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { cn } from "@/lib/utils";
+
+export interface ProjectPreset {
+  id: string;
+  name: string;
+  description: string;
+  category: string;
+  color: string;
+  fontSize: number;
+  searchTerm: string;
+}
+
+export const projectPresets: ProjectPreset[] = [
+  {
+    id: "science-fair",
+    name: "Science Fair Poster",
+    description: "Clean, modern fonts for scientific presentations",
+    category: "Sans-serif",
+    color: "#1e40af",
+    fontSize: 48,
+    searchTerm: "Roboto"
+  },
+  {
+    id: "history-report",
+    name: "History Report",
+    description: "Classic, elegant fonts for historical documents",
+    category: "Serif",
+    color: "#7c2d12",
+    fontSize: 36,
+    searchTerm: "Playfair"
+  },
+  {
+    id: "drama-poster",
+    name: "Drama Poster",
+    description: "Bold, theatrical fonts for performance posters",
+    category: "Display",
+    color: "#9333ea",
+    fontSize: 72,
+    searchTerm: "Bebas"
+  },
+  {
+    id: "creative-writing",
+    name: "Creative Writing",
+    description: "Elegant cursive fonts for poetry and stories",
+    category: "Cursive",
+    color: "#be185d",
+    fontSize: 32,
+    searchTerm: "Dancing"
+  },
+  {
+    id: "coding-project",
+    name: "Coding Project",
+    description: "Clean monospace fonts for tech presentations",
+    category: "Monospace",
+    color: "#059669",
+    fontSize: 28,
+    searchTerm: "Fira"
+  },
+  {
+    id: "halloween",
+    name: "Halloween Party",
+    description: "Spooky fonts for scary invitations",
+    category: "Spooky",
+    color: "#ea580c",
+    fontSize: 56,
+    searchTerm: "Creep"
+  },
+  {
+    id: "book-report",
+    name: "Book Report",
+    description: "Readable fonts for essays and reports",
+    category: "Serif",
+    color: "#374151",
+    fontSize: 24,
+    searchTerm: "Merriweather"
+  },
+  {
+    id: "art-project",
+    name: "Art Project",
+    description: "Stylish display fonts for creative projects",
+    category: "Display",
+    color: "#dc2626",
+    fontSize: 64,
+    searchTerm: "Pacifico"
+  }
+];
 
 interface ToolbarProps {
   text: string;
@@ -28,6 +113,7 @@ interface ToolbarProps {
   showFavorites: boolean;
   setShowFavorites: (val: boolean) => void;
   favoritesCount: number;
+  onApplyPreset: (preset: ProjectPreset) => void;
 }
 
 const fontSizePresets = [
@@ -50,7 +136,8 @@ export function Toolbar({
   setAiStyles,
   showFavorites,
   setShowFavorites,
-  favoritesCount
+  favoritesCount,
+  onApplyPreset
 }: ToolbarProps) {
   const [aiPrompt, setAiPrompt] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
@@ -97,6 +184,14 @@ export function Toolbar({
             >
               <Sparkles className="w-4 h-4 mr-2" />
               AI Effects
+            </TabsTrigger>
+            <TabsTrigger 
+              value="presets" 
+              data-testid="tab-presets"
+              className="data-[state=active]:bg-green-200 data-[state=active]:text-green-800 dark:data-[state=active]:bg-green-800 dark:data-[state=active]:text-green-100"
+            >
+              <Palette className="w-4 h-4 mr-2" />
+              Project Presets
             </TabsTrigger>
           </TabsList>
 
@@ -249,6 +344,25 @@ export function Toolbar({
                 </div>
               </div>
             )}
+          </TabsContent>
+
+          <TabsContent value="presets" className="space-y-4">
+            <p className="text-sm text-muted-foreground">Choose a project type to auto-fill fonts, colors, and sizes:</p>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              {projectPresets.map((preset) => (
+                <Button
+                  key={preset.id}
+                  variant="outline"
+                  className="h-auto py-3 px-4 flex flex-col items-start gap-1 hover-elevate"
+                  style={{ borderLeftColor: preset.color, borderLeftWidth: 4 }}
+                  onClick={() => onApplyPreset(preset)}
+                  data-testid={`button-preset-${preset.id}`}
+                >
+                  <span className="font-semibold text-sm">{preset.name}</span>
+                  <span className="text-xs text-muted-foreground line-clamp-1">{preset.description}</span>
+                </Button>
+              ))}
+            </div>
           </TabsContent>
         </Tabs>
       </div>
