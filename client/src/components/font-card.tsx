@@ -7,6 +7,7 @@ import { Palette, Play, Bold, Italic, Underline, Copy, Check, Heart, Download } 
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import html2canvas from "html2canvas";
+import { playSparkleSound, playPopSound, playClickSound } from "@/lib/sounds";
 
 function FloralCorner({ className }: { className?: string }) {
   return (
@@ -235,6 +236,7 @@ export function FontCard({ font, previewText, fontSize, index = 0, color, onColo
     try {
       await navigator.clipboard.writeText(font.family);
       setCopied(true);
+      playPopSound();
       toast({
         title: "Copied!",
         description: `"${font.family}" copied to clipboard`,
@@ -264,6 +266,7 @@ export function FontCard({ font, previewText, fontSize, index = 0, color, onColo
       link.href = canvas.toDataURL("image/png");
       link.click();
       
+      playClickSound();
       toast({
         title: "Downloaded!",
         description: `Preview saved as ${link.download}`,
@@ -280,6 +283,7 @@ export function FontCard({ font, previewText, fontSize, index = 0, color, onColo
   };
 
   const playAnimation = async () => {
+    playSparkleSound();
     await textControls.start(textAnimations[currentAnim]);
   };
 

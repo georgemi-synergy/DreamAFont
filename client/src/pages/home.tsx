@@ -3,12 +3,13 @@ import { useFonts } from "@/hooks/use-fonts";
 import { FontCard } from "@/components/font-card";
 import { Toolbar, ProjectPreset } from "@/components/toolbar";
 import { LoadingGrid } from "@/components/loading-skeleton";
-import { AlertCircle, Search, Volume2, VolumeX, Moon, Sun, Sparkles } from "lucide-react";
+import { AlertCircle, Search, Volume2, VolumeX, Moon, Sun, Sparkles, Star } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import pinkFlowersWallpaper from "@assets/generated_images/pink_flowers_wallpaper_pattern.png";
 import dreamyMusic from "@assets/dreamy-ambient.mp3";
 import confetti from "canvas-confetti";
+import { playSuccessSound, playWhooshSound, playSparkleSound, playClickSound, playMagicSound } from "@/lib/sounds";
 
 export default function Home() {
   const { data: fonts, isLoading, error } = useFonts();
@@ -54,12 +55,15 @@ export default function Home() {
     );
     
     if (isAdding) {
+      playSuccessSound();
       confetti({
         particleCount: 50,
         spread: 60,
         origin: { y: 0.7 },
         colors: ['#ff69b4', '#ff1493', '#db7093', '#ffb6c1', '#ffc0cb']
       });
+    } else {
+      playClickSound();
     }
   };
 
@@ -69,6 +73,7 @@ export default function Home() {
     const randomIndex = Math.floor(Math.random() * filteredFonts.length);
     const randomFont = filteredFonts[randomIndex];
     
+    playMagicSound();
     confetti({
       particleCount: 100,
       spread: 70,
@@ -79,6 +84,7 @@ export default function Home() {
     setHighlightedFontId(randomFont.id);
     
     setTimeout(() => {
+      playWhooshSound();
       const cardElement = document.querySelector(`[data-testid="card-font-${randomFont.id}"]`);
       if (cardElement) {
         cardElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -146,16 +152,55 @@ export default function Home() {
       {/* Background Music */}
       <audio ref={audioRef} src={dreamyMusic} loop />
       
+      {/* Floating Stars Animation */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        {[...Array(8)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute text-yellow-400/30 dark:text-yellow-300/20"
+            style={{
+              left: `${10 + (i * 12) % 80}%`,
+              top: `${15 + (i * 17) % 70}%`,
+            }}
+            animate={{ 
+              y: [0, -60 - i * 10, 0],
+              x: [0, 30 - i * 8, 0],
+              rotate: [0, 360],
+              scale: [0.6 + i * 0.05, 1, 0.6 + i * 0.05]
+            }}
+            transition={{ 
+              duration: 8 + i * 2,
+              repeat: Infinity,
+              repeatType: "reverse",
+              ease: "easeInOut",
+              delay: i * 0.5
+            }}
+          >
+            <Star className="w-6 h-6 fill-current" />
+          </motion.div>
+        ))}
+      </div>
+
       {/* Header / Brand */}
-      <header className="bg-background pt-8 pb-6 px-4 sm:px-6 lg:px-8 border-b border-border/40">
+      <header className="bg-background pt-8 pb-6 px-4 sm:px-6 lg:px-8 border-b border-border/40 relative z-10">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-end md:items-center gap-4">
           <div>
-            <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+            <motion.h1 
+              className="text-4xl md:text-5xl font-extrabold tracking-tight bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+            >
               Dream a Font
-            </h1>
-            <p className="text-muted-foreground mt-2 text-lg">
+            </motion.h1>
+            <motion.p 
+              className="text-muted-foreground mt-2 text-lg"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
               Do you want a fancy font or animation for work or school? Well you've come to the right place.
-            </p>
+            </motion.p>
           </div>
           <div className="flex items-center gap-3">
             <Button
