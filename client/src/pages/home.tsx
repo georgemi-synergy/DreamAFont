@@ -10,7 +10,7 @@ import pinkFlowersWallpaper from "@assets/generated_images/pink_flowers_wallpape
 import starsAndMoonsWallpaper from "@assets/generated_images/stars_and_moons_night_pattern.png";
 import dreamyMusic from "@assets/dreamy-ambient.mp3";
 import confetti from "canvas-confetti";
-import { playSuccessSound, playWhooshSound, playSparkleSound, playClickSound, playMagicSound } from "@/lib/sounds";
+import { playSuccessSound, playWhooshSound, playSparkleSound, playClickSound, playMagicSound, playNightSound, playDaySound } from "@/lib/sounds";
 
 export default function Home() {
   const { data: fonts, isLoading, error } = useFonts();
@@ -217,7 +217,14 @@ export default function Home() {
             <Button
               variant="outline"
               size="icon"
-              onClick={() => setIsDark(!isDark)}
+              onClick={() => {
+                if (isDark) {
+                  playDaySound();
+                } else {
+                  playNightSound();
+                }
+                setIsDark(!isDark);
+              }}
               className="bg-pink-50 dark:bg-pink-900/20 border-pink-200 dark:border-pink-800/40"
               data-testid="button-toggle-theme"
             >
