@@ -244,6 +244,30 @@ export default function Home() {
     }
   };
 
+  const handleApplyPreset = (preset: ProjectPreset | null) => {
+    if (preset === null) {
+      // Reset to defaults
+      setCategory("all");
+      setSearch("");
+      setFontSize(32);
+      setGlobalColor("#000000");
+      setShowFavorites(false);
+    } else {
+      setCategory(preset.category);
+      setSearch(preset.searchTerm);
+      setFontSize(preset.fontSize);
+      setGlobalColor(preset.color);
+      setShowFavorites(false);
+    }
+  };
+
+  const filteredFonts = fonts?.filter(font => {
+    const matchesCategory = category === "all" || font.category === category;
+    const matchesSearch = font.name.toLowerCase().includes(search.toLowerCase());
+    const matchesFavorites = !showFavorites || favorites.includes(font.id);
+    return matchesCategory && matchesSearch && matchesFavorites;
+  });
+
   // Keyboard shortcuts - uses refs to avoid recreating listeners
   const isDarkRef = useRef(isDark);
   const isPlayingRef = useRef(isPlaying);
@@ -319,30 +343,6 @@ export default function Home() {
     window.addEventListener('keydown', handleKeyboard);
     return () => window.removeEventListener('keydown', handleKeyboard);
   }, []);
-
-  const handleApplyPreset = (preset: ProjectPreset | null) => {
-    if (preset === null) {
-      // Reset to defaults
-      setCategory("all");
-      setSearch("");
-      setFontSize(32);
-      setGlobalColor("#000000");
-      setShowFavorites(false);
-    } else {
-      setCategory(preset.category);
-      setSearch(preset.searchTerm);
-      setFontSize(preset.fontSize);
-      setGlobalColor(preset.color);
-      setShowFavorites(false);
-    }
-  };
-
-  const filteredFonts = fonts?.filter(font => {
-    const matchesCategory = category === "all" || font.category === category;
-    const matchesSearch = font.name.toLowerCase().includes(search.toLowerCase());
-    const matchesFavorites = !showFavorites || favorites.includes(font.id);
-    return matchesCategory && matchesSearch && matchesFavorites;
-  });
 
   if (error) {
     return (
